@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://code.highcharts.com/stock/highstock.js"></script>
+  <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+
+  <script type="javascript"></script>
+
+  <script type="text/javascript">
+
+      var blocksLOCH = new Array();
+  
+$.getJSON('http://localhost:8000/last/50', function (data) {
+
+    data.forEach(element => {
+            
+        let block = new Array;
+        let buffer;
+
+        var candles = element.candles[1][0];
+        
+        block.push(
+    
+            element.height,
+            /*element.price.low,
+            element.price.open,
+            element.price.close,
+            element.price.high*/
+            
+            candles[1],
+            candles[2],
+            candles[3],
+            candles[4]
+            
+            )
+
+        blocksLOCH.push(block)
+
+    });
+
+// create the chart
+Highcharts.stockChart('container', {
+
+
+    title: {
+    
+        text: 'Bitcoin Block Height x USD Price'
+    
+    },
+
+    xAxis: {
+    
+        labels: {
+    
+            format: '{value} B'
+    
+        },
+
+        minRange: 5,
+    
+        title: {
+    
+            text: 'Block Height'
+    
+        }
+    
+    },
+
+    rangeSelector: {
+        buttons: [{
+            type: 'hour',
+            count: 1,
+            text: '1h'
+        }, {
+            type: 'day',
+            count: 1,
+            text: '1D'
+        }, {
+            type: 'all',
+            count: 1,
+            text: 'All'
+        }],
+        selected: 1,
+        inputEnabled: false
+    },
+
+    series: [{
+        name: 'Bitcoin',
+        type: 'candlestick',
+        data: blocksLOCH,
+        tooltip: {
+            valueDecimals: 2
+        }
+    }]
+
+});
+
+});
+
+  
+  </script>
+  
+  <style>
+  
+    body {
+
+        display: flex;
+        flex-direction: row;
+
+    }
+  
+  </style>
+
+  <title>BlockFrame Charting</title>
+
+</head>
+
+<body>
+
+    <div id="container" style="height: 100vh; width: 100vw;"></div>
+
+</body>
+
+</html>
