@@ -15,31 +15,33 @@
 
       var blocksLOCH = new Array();
   
-$.getJSON('http://localhost:8000/last/50', function (data) {
+$.getJSON('http://127.0.0.1:8000/last/100', function (data) {
 
     data.forEach(element => {
             
         let block = new Array;
         let buffer;
 
-        var candles = element.candles[1][0];
-        
-        block.push(
-    
-            element.height,
-            /*element.price.low,
-            element.price.open,
-            element.price.close,
-            element.price.high*/
-            
-            candles[1],
-            candles[2],
-            candles[3],
-            candles[4]
-            
-            )
+        var candle = element.candles;
 
-        blocksLOCH.push(block)
+              block.push(
+    
+                element.height,
+                /*element.price.low,
+                element.price.open,
+                element.price.close,
+                element.price.high*/
+            
+                candle.open,
+                candle.high,
+                candle.low,
+                candle.close
+            
+            );
+
+        console.log(block);
+
+        blocksLOCH.push(block);
 
     });
 
@@ -60,6 +62,9 @@ Highcharts.stockChart('container', {
             format: '{value} B'
     
         },
+
+        type: 'linear',
+        tickInterval: 1,
 
         minRange: 5,
     

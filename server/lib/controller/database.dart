@@ -23,15 +23,36 @@ class Database {
 
   }
 
-  Future<List<Map>> fetchLastBlock({blocks: int}) async {
+  Future<List<Map>> fetchBlocks(List<int> blocks) async {
 
-    return await db.collection('bitcoin block').find({}).take(blocks).toList();
+    List<Map<dynamic,dynamic>> list = await db.collection('bitcoin block')
+
+      .find(where
+
+        .gte('height', blocks.first)
+        .lte('height', blocks.last)
+
+    ).toList();
+
+    list.sort((Map a,Map b) => (a['height'] as int).compareTo(b['height'] as int));
+
+    return list;
+
+  }
+
+  Future<List<Map>> fetchLastBlocks({blocks: int}) async {
+
+    List<Map<dynamic,dynamic>> list = await db.collection('bitcoin block').find(where.sortBy('time').limit(blocks)).toList();
+
+    list.sort((Map a,Map b) => (a['height'] as int).compareTo(b['height'] as int));
+
+    return list;
 
   }
 
   Future save(data) async {
 
-    DbCollection collection = db.collection('bitcoin block');
+    DbCollection collection = db.collection('bitcoin_block');
     Settings.instance.logger.log(Level.INFO, 'Saving data: ${data}');
 
     collection.find({'hash': data['hash']}).isEmpty.then((success) {

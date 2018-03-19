@@ -36,8 +36,14 @@ class BlockframeServerSink extends RequestSink {
     // Prefer to use `pipe` and `generate` instead of `listen`.
     // See: https://aqueduct.io/docs/http/request_controller/
     router
+    
         .route("/last/[:blocks]")
         .generate(() => new BlocksController());
+    
+    router
+    
+      .route("/range/[:blocks]")
+      .generate(() => new RangeController());
 
   }
 
@@ -58,11 +64,11 @@ class BlockframeServerSink extends RequestSink {
 class BlocksController extends HTTPController {
 
   @httpGet
-  Future<Response> getBlocks(@HTTPPath("blocks") int blocks) async {
+  Future<Response> getLastBlocks(@HTTPPath("blocks") int blocks) async {
 
     if (blocks > 0 && blocks < 200) {
 
-      List<Map> data = await Database.instance.fetchLastBlock(blocks: blocks);
+      List<Map> data = await Database.instance.fetchLastBlocks(blocks: blocks);
 
       return new Response.ok(data)
 
@@ -71,6 +77,26 @@ class BlocksController extends HTTPController {
     }
 
     else return new Response.badRequest();
+
+  }
+
+}
+
+class RangeController extends HTTPController {
+
+  @httpGet
+  Future<Response> getBlocksByRange(@HTTPPath("range") String range) async {
+
+    var blocks = range.split('-');
+
+    int first = int.parse(blocks.first);
+    int last = int.parse(blocks.last);
+
+    List<Map> data = await Database.instance.fetchBlocks([first,last]);
+
+    return new Response.ok(data)
+
+      ..contentType = ContentType.JSON;
 
   }
 

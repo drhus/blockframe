@@ -5,16 +5,20 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:blockframe_daemon/controller/settings.dart';
+import 'package:blockframe_daemon/model/channel.dart';
 
 import 'requests.dart';
 
-class BlockChain {
+class BlockChainChannel extends Channel {
 
-  static const url  = 'wss://ws.blockchain.info/inv';
+  BlockChainChannel() {
 
-  StreamController _onBlockFramesController = new StreamController.broadcast();
+    name = 'Blockchain';
+    url  = 'wss://ws.blockchain.info/inv';
 
-  WebSocket webSocket;
+  }
+
+  StreamController _onNewBlockController = new StreamController.broadcast();
 
   Future connect() async {
 
@@ -24,9 +28,9 @@ class BlockChain {
 
       case WebSocket.OPEN:
 
-        Settings.instance.logger.log(Level.INFO,'Connected to ${url}');
+        onConnectController.add(webSocket.readyState);
 
-        webSocket.add(Requests.ping);
+        //webSocket.add(Requests.ping);
         webSocket.add(Requests.subscribeToBlocks);
 
         // Ping the server once per minute
@@ -45,7 +49,7 @@ class BlockChain {
 
             case 'block':
 
-              _onBlockFramesController.add(data['x']);
+              _onNewBlockController.add(data['x']);
               break;
 
             default:
@@ -55,25 +59,18 @@ class BlockChain {
 
           }},
 
-            onDone: () async {
-
-              print('Blockchain.info websocket is closed.');
-              await connect();
-
-            },
-
-            onError: (error) {
-
-              print('Blockchain.info websocket is closed due to an error: $error');
-
-            });
-
-        break;
+          onDone: onDone, onError: onError);
 
     }
 
   }
 
-  Stream<Map> get onBlockFrames => _onBlockFramesController.stream;
+  Future disconnect() async {
+
+    await webSocket.close();
+
+  }
+
+  Stream<Map> get onNewBlock => _onNewBlockController.stream;
 
 }

@@ -4,16 +4,24 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:blockframe_daemon/controller/settings.dart';
+import 'package:blockframe_daemon/model/channel.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 
 import 'requests.dart';
 
-class Bitfinex {
-
-  static const url  = 'wss://api.bitfinex.com/ws/2';
-  WebSocket webSocket;
+class BitfinexChannel extends Channel {
 
   StreamController _onCandlesController = new StreamController.broadcast();
+
+  Db database;
+  DbCollection candles;
+
+  BitfinexChannel() {
+
+    name = 'Bitfinex';
+    url = 'wss://api.bitfinex.com/ws/2';
+
+  }
 
   Future connect() async {
 
@@ -23,13 +31,13 @@ class Bitfinex {
 
       case WebSocket.OPEN:
 
-        Settings.instance.logger.log(Level.INFO,'Connected to ${url}');
+        onConnectController.add(webSocket.readyState);
 
         webSocket.add(Requests.subscribeToCandles);
 
         webSocket.listen((event) {
 
-          var data = JSON.decode(event);
+          var data = json.decode(event);
 
           if (data is List) {
 
@@ -39,19 +47,7 @@ class Bitfinex {
 
           },
 
-        onDone: () {
-
-          Settings.instance.logger.log(Level.INFO, 'Bitfinex websocket is closed.');
-
-        },
-
-        onError: (error) {
-
-          Settings.instance.logger.log(Level.INFO, 'Bitfinex websocket is closed due to an error: $error.');
-
-        });
-
-        break;
+          onDone: onDone, onError: onError);
 
     }
 
