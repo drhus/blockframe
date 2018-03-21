@@ -1,8 +1,8 @@
 library dao;
 
 import 'dart:async';
+import 'dart:math';
 
-import 'package:ansicolor/ansicolor.dart';
 import 'package:blockframe_daemon/controller/settings.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
@@ -18,16 +18,18 @@ class Blockchain {
 
   Future<List<int>> findLastest(Map block) async {
 
+    num secondsToMicroseconds(num value) => value * pow(10,6);
+
     List<Map> blocks = await blocksCollection.find(where.sortBy('time',descending: true).limit(1)).toList();
 
-    return [blocks.length > 0 ? blocks.first['time'] : 0, block['time']];
+    return [blocks.length > 0 ? secondsToMicroseconds(blocks.first['time']) : 0, secondsToMicroseconds(block['time'])];
 
   }
 
   Future saveBlock(Map block) async {
 
-    AnsiPen redPen = new AnsiPen()..red(bold: true);
-    AnsiPen bluePen = new AnsiPen()..cyan(bold: true);
+    //AnsiPen redPen = new AnsiPen()..red(bold: true);
+    //AnsiPen bluePen = new AnsiPen()..cyan(bold: true);
 
     /*int differenceInSeconds = new DateTime.fromMillisecondsSinceEpoch(block['time'] * 1000).difference(new DateTime.fromMillisecondsSinceEpoch(block['candles']['mts'] * 1000)).inSeconds; */
 
