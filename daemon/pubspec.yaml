@@ -11,6 +11,7 @@ dependencies:
   logging:
   mongo_dart:
   ansicolor:
+  quiver:
 
 dev_dependencies:
   test: ^0.12.0

@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:blockframe_daemon/model/channel.dart';
+import 'package:blockframe_daemon/controller/websockets/channel.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 import 'requests.dart';
@@ -16,7 +16,7 @@ class BitfinexChannel extends Channel {
   Db database;
   DbCollection candles;
 
-  BitfinexChannel() {
+  BitfinexChannel({int secondsToTimeOut = 600}) : super(secondsToTimeOut) {
 
     name = 'Bitfinex';
     url = 'wss://api.bitfinex.com/ws/2';
@@ -41,13 +41,34 @@ class BitfinexChannel extends Channel {
 
           if (data is List) {
 
-              _onCandlesController.add(data);
+            // First element is the channel ID
+            for (var details in data.sublist(1,data.length)) {
+
+              if (details is List) {
+
+                _onCandlesController.add(details);
+
+              }
+
+              else if (details is String) {
+
+                // Heartbeat checking
+                if (details == 'hb') {
+
+                  // Adds channel ID to the stream
+                  onHeartBeatController.add(details[0]);
+
+                }
+
+              }
 
             }
 
-          },
+          }
 
-          onDone: onDone, onError: onError);
+        },
+
+        onDone: onDone, onError: onError);
 
     }
 
@@ -56,6 +77,7 @@ class BitfinexChannel extends Channel {
   Future disconnect() async {
 
     await webSocket.close();
+    onDisconnectController.add(webSocket.readyState);
 
   }
 

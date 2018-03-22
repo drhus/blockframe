@@ -1,8 +1,9 @@
 import 'dart:async';
+import 'dart:core';
 
 import 'package:ansicolor/ansicolor.dart';
 import 'package:blockframe_daemon/controller/settings.dart';
-import 'package:blockframe_daemon/model/candle.dart';
+import 'package:blockframe_daemon/model/custom_candle.dart';
 import 'package:logging/logging.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
@@ -10,76 +11,95 @@ class Bitfinex {
 
   DbCollection candlesCollection;
 
+  static Map<int, CustomCandle> _candles = {};
+
   Bitfinex(Db db) {
 
     candlesCollection = db.collection('bitfinex_candles');
 
-  }
+    // Cleans the cache
 
-  Future<bool> candleExists(int timeStamp) async {
+    new Timer.periodic(new Duration(hours: 1), (Timer timer) {
 
-    List<Map> timestamps = await candlesCollection
+      _candles = {};
 
-        .find(where.eq('mts', timeStamp))
-        .toList();
-
-    return ! (timestamps.length == 0);
+    });
 
   }
 
-  Future<List<Candle>> fetchCandles(int older, int newer) async {
+  Future<List<CustomCandle>> fetchCandles(int older, int newer) async {
 
     List<Map> pipeline = [
 
-      /* Find the closest bitfinex entry that matches the bitcoin block timestamp */
-      { r'$project' : { 'mts' : 1, 'open': 1, 'close': 1, 'high': 1, 'low': 1, 'volume': 1, 'diff' : { r'$abs' : { r'$subtract' : [newer, r'$mts'] }}}},
-      { r'$sort' : { 'diff' : 1 }},
+      {
+        r'$project': {
+
+          'luts': 1,
+          'diff': { r'$abs': { r'$subtract': [newer, r'$luts']}},
+
+          'candle.mts': 1,
+          'candle.open': 1,
+          'candle.close': 1,
+          'candle.high': 1,
+          'candle.low': 1,
+          'candle.volume': 1
+
+        }
+      },
+
+      { r'$sort': { 'diff': 1}},
+
       /* Get all entries between the last block and and previous one (last and penultimate) */
-      { r'$match' : { 'mts': { r'$gte': older, r'$lte': newer } } },
-      { r'$sort' : { 'mts' : -1 }}
+      { r'$match': { 'luts': { r'$gte': older, r'$lte': newer}}},
+
+      { r'$sort': { 'luts': -1}}
 
     ];
 
-    var aggregateResults = (await candlesCollection.aggregateToStream(pipeline,cursorOptions: {}).toList());
+    List aggregateResults = (await candlesCollection.aggregateToStream(pipeline,cursorOptions: {}).toList());
 
-    List<Candle> candles = aggregateResults.map((dynamic candle) {
+    List<CustomCandle> results = aggregateResults.map((dynamic candle) {
 
-      return new Candle(candle['mts'],candle['open'],candle['close'],candle['high'],candle['low'],candle['volume']);
+      return new CustomCandle(
+
+          candle['luts'],
+
+          candle['candle']['mts'],
+          candle['candle']['open'],
+          candle['candle']['close'],
+          candle['candle']['high'],
+          candle['candle']['low'],
+          candle['candle']['volume']);
 
     }).toList();
 
-    candles.sort((Candle a,Candle b) => a.mts.compareTo(b.mts));
-
-    return candles;
+    return results;
 
   }
 
-  Future saveCandles(dynamic data) async {
+  Future saveCandles(List data) async {
 
-    // First element is the channel ID
-    for (var details in data.sublist(1,data.length)) {
+    AnsiPen greenPen = new AnsiPen()..green(bold: true);
+    AnsiPen bluePen = new AnsiPen()..blue(bold: true);
+    //AnsiPen redPen = new AnsiPen()..red(bold: true);
 
-      if (details is List) {
+    CustomCandle candle = new CustomCandle.fromList(data);
 
-        Candle candle = new Candle.fromList(details);
+    // Check if candle already exists in cache
+    if (! _candles.containsKey(candle.candleHashCode)) {
 
-        bool exists = await candleExists(candle.mts);
+      Settings.instance.logger.log(Level.INFO,'Saving bitfinex candle ${greenPen(candle.asMap.toString())}');
+      Settings.instance.logger.log(Level.INFO,'Adding candle to cache - Hash: ${bluePen(candle.hashCode.toString())}');
 
-        if (! exists) {
+      candlesCollection.insert(candle.asMap);
 
-          AnsiPen pen = new AnsiPen()..red(bold: true);
-          Settings.instance.logger.log(Level.INFO,'Saving bitfinex transaction data on timestamp ${pen(candle.asMap.toString())}');
-          candlesCollection.save(candle.asMap);
+      _candles[candle.candleHashCode] = candle;
 
-        }
+    }
 
-        else {
+    else {
 
-          candlesCollection.update(where.exists('mts'), candle.asMap);
-
-        }
-
-      }
+      Settings.instance.logger.log(Level.INFO,'Result is in cache - ${bluePen("SKIPPING")}');
 
     }
 

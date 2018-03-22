@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:logging/logging.dart';
 export 'package:logging/logging.dart';
 
@@ -7,6 +9,7 @@ class Settings {
   static Settings get instance => _instance;
 
   final Logger logger = new Logger('blockframe');
+  final File log = new File('log.txt');
 
   Settings._private() {
 
