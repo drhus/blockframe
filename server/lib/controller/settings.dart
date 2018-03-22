@@ -4,7 +4,6 @@ export 'package:logging/logging.dart';
 class Settings {
 
   static final Settings _instance = new Settings._private();
-  static Settings get instance => _instance;
 
   final Logger logger = new Logger('blockframe');
 
@@ -19,5 +18,7 @@ class Settings {
     });
 
   }
+
+  static Settings get instance => _instance;
 
 }

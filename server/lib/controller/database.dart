@@ -7,8 +7,6 @@ import 'package:mongo_dart/mongo_dart.dart';
 class Database {
 
   static Database _instance = new Database._private();
-  static Database get instance => _instance;
-
   Db db;
 
   Database._private() {
@@ -50,7 +48,7 @@ class Database {
 
   }
 
-  Future save(data) async {
+  Future save(Map data) async {
 
     DbCollection collection = db.collection('bitcoin_block');
     Settings.instance.logger.log(Level.INFO, 'Saving data: ${data}');
@@ -68,5 +66,7 @@ class Database {
     await db.close();
 
   }
+
+  static Database get instance => _instance;
 
 }
