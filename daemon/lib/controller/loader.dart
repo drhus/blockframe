@@ -11,7 +11,7 @@ import 'package:blockframe_daemon/model/custom_candle.dart';
 class Loader {
 
   BlockChainChannel blockChainChannel = new BlockChainChannel(secondsToTimeOut: 600);
-  BitfinexChannel bitfinexChannel = new BitfinexChannel(secondsToTimeOut: 120);
+  BitfinexChannel bitfinexChannel = new BitfinexChannel(secondsToTimeOut: 30);
 
   void start() async {
 

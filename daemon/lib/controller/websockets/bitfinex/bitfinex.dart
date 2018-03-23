@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:blockframe_daemon/controller/settings.dart';
 import 'package:blockframe_daemon/controller/websockets/channel.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
@@ -38,11 +39,12 @@ class BitfinexChannel extends Channel {
         webSocket.listen((event) {
 
           var data = json.decode(event);
+          Settings.instance.logger.fine('Raw data received from websocket: $data');
 
           if (data is List) {
 
             // First element is the channel ID
-            for (var details in data.sublist(1,data.length)) {
+            for (var details in data.sublist(1,data.length)) { // 1521828120000
 
               if (details is List) {
 

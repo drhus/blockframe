@@ -16,6 +16,8 @@ Dart
 
 You need to install the Dart SDK. Instructions are available here: https://www.dartlang.org/install
 
+After you install it, you need to run _pub get_ at this project root folder in order to fetch dependencies. 
+
 Then run the file **main.dart** file inside the _bin_ folder.
 
 For faster startups, use the [--snapshots](https://www.dartlang.org/dart-vm/tools/dart-vm#snapshot-option) parameters of the dart command line program. Example:

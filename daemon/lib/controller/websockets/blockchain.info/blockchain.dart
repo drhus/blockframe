@@ -39,6 +39,7 @@ class BlockChainChannel extends Channel {
         webSocket.listen((event) {
 
           var data = json.decode(event);
+          Settings.instance.logger.log(Level.FINE,'Raw data received from websocket: $data');
 
           switch(data['op']) {
 

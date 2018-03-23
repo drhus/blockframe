@@ -63,7 +63,7 @@ abstract class Channel {
 
     timeOut = secondsToTimeOut;
 
-    new Timer(new Duration(seconds: 1),() {
+    timer = new Timer.periodic(new Duration(seconds: 1),(Timer timer) {
 
       timeOut--;
 
