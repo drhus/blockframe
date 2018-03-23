@@ -9,17 +9,8 @@ class Settings {
   static Settings get instance => _instance;
 
   final Logger logger = new Logger('blockframe');
-  final File log = new File('log/log.txt');
 
   Settings._private() {
-
-    if (! log.existsSync()) {
-
-      log.createSync(recursive: true);
-
-    }
-
-    IOSink sink = log.openWrite(mode: FileMode.APPEND);
 
     Logger.root.level = Level.INFO;
 
@@ -28,7 +19,6 @@ class Settings {
       String contents = '${rec.level.name}: ${rec.time}: ${rec.message}';
 
       print(contents);
-      sink.writeln(contents);
 
     });
 
