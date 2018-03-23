@@ -22,6 +22,10 @@ For faster startups, use the [--snapshots](https://www.dartlang.org/dart-vm/tool
 
 `dart --snapshot=blockframe-daemon main.dart`
 
+If you're using Linux you can also run dart snapshots just as an executable file by using [update-binfmts]() 
+
+sudo update-binfmts --package dart --install dart-script /usr/bin/dart --magic '\xf5\xf5\xdc\xdc'
+
 Run
 ---
 
