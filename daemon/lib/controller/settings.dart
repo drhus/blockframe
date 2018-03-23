@@ -13,11 +13,16 @@ class Settings {
 
   Settings._private() {
 
+    log.openWrite();
+
     Logger.root.level = Level.INFO;
 
     Logger.root.onRecord.listen((LogRecord rec) {
 
-      print('${rec.level.name}: ${rec.time}: ${rec.message}');
+      String contents = '${rec.level.name}: ${rec.time}: ${rec.message}';
+
+      print(contents);
+      log.writeAsStringSync(contents);
 
     });
 
