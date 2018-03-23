@@ -81,7 +81,7 @@ class Bitfinex {
 
     AnsiPen greenPen = new AnsiPen()..green(bold: true);
     AnsiPen bluePen = new AnsiPen()..blue(bold: true);
-    //AnsiPen redPen = new AnsiPen()..red(bold: true);
+    AnsiPen redPen = new AnsiPen()..red(bold: true);
 
     CustomCandle candle = new CustomCandle.fromList(data);
 
@@ -99,7 +99,7 @@ class Bitfinex {
 
     else {
 
-      Settings.instance.logger.log(Level.INFO,'Result is in cache - ${bluePen("SKIPPING")}');
+      Settings.instance.logger.log(Level.INFO,'Result is in cache - ${redPen(candle.asMap.toString())} - ${bluePen("SKIPPING")}');
 
     }
 
