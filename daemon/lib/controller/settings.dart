@@ -30,8 +30,6 @@ class Settings {
       print(contents);
       sink.writeln(contents);
 
-      await sink.flush();
-
     });
 
   }
