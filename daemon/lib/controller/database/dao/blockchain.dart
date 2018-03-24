@@ -3,6 +3,7 @@ library dao;
 import 'dart:async';
 import 'dart:math';
 
+import 'package:ansicolor/ansicolor.dart';
 import 'package:blockframe_daemon/controller/settings.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
@@ -28,15 +29,20 @@ class Blockchain {
 
   Future saveBlock(Map block) async {
 
-    //AnsiPen redPen = new AnsiPen()..red(bold: true);
-    //AnsiPen bluePen = new AnsiPen()..cyan(bold: true);
+    AnsiPen green = new AnsiPen()..green(bold: true);
+    AnsiPen blue = new AnsiPen()..cyan(bold: true);
+    AnsiPen red = new AnsiPen()..red(bold: true);
 
     /*int differenceInSeconds = new DateTime.fromMillisecondsSinceEpoch(block['time'] * 1000).difference(new DateTime.fromMillisecondsSinceEpoch(block['candles']['mts'] * 1000)).inSeconds; */
 
     /*Settings.instance.logger.log(Level.INFO,'Saving block ${bluePen(block['height'] as String)}, timestamp: ${redPen(block['time'] as String)} (${differenceInSeconds as String}) seconds of difference'); */
 
-    Settings.instance.logger.log(Level.INFO,'Saving block ${block['height']}, timestamp: ${block['time']}');
-    Settings.instance.logger.log(Level.INFO,'Candle data: ${block['candle']}');
+    var height = block['height'];
+    var time = block['time'];
+    var candle = block['candle'];
+
+    Settings.instance.logger.log(Level.INFO,'Saving block ${blue(height)}, timestamp: ${red(time)}');
+    Settings.instance.logger.log(Level.INFO,'Candle data: ${green(candle)}');
 
     await blocksCollection.save(block);
 

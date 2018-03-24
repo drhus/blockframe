@@ -11,19 +11,9 @@ class Bitfinex {
 
   DbCollection candlesCollection;
 
-  static Map<int, CustomCandle> _candles = {};
-
   Bitfinex(Db db) {
 
     candlesCollection = db.collection('bitfinex_candles');
-
-    // Cleans the cache
-
-    new Timer.periodic(new Duration(hours: 1), (Timer timer) {
-
-      _candles = {};
-
-    });
 
   }
 
@@ -80,28 +70,13 @@ class Bitfinex {
   Future saveCandles(List data) async {
 
     AnsiPen greenPen = new AnsiPen()..green(bold: true);
-    AnsiPen bluePen = new AnsiPen()..blue(bold: true);
-    AnsiPen redPen = new AnsiPen()..red(bold: true);
+    /*AnsiPen bluePen = new AnsiPen()..blue(bold: true);
+    AnsiPen redPen = new AnsiPen()..red(bold: true);*/
 
     CustomCandle candle = new CustomCandle.fromList(data);
 
-    // Check if candle already exists in cache
-    if (! _candles.containsKey(candle.candleHashCode)) {
-
-      Settings.instance.logger.log(Level.INFO,'Saving bitfinex candle ${greenPen(candle.asMap.toString())}');
-      Settings.instance.logger.log(Level.INFO,'Adding candle to cache - Hash: ${bluePen(candle.hashCode.toString())}');
-
-      candlesCollection.insert(candle.asMap);
-
-      _candles[candle.candleHashCode] = candle;
-
-    }
-
-    else {
-
-      Settings.instance.logger.log(Level.INFO,'Result is in cache - ${redPen(candle.asMap.toString())} - ${bluePen("SKIPPING")}');
-
-    }
+    Settings.instance.logger.log(Level.INFO,'Saving bitfinex candle ${greenPen(candle.asMap.toString())}');
+    candlesCollection.insert(candle.asMap);
 
   }
 

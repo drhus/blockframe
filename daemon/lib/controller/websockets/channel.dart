@@ -18,7 +18,7 @@ abstract class Channel {
 
   Timer timer;
 
-  int timeOut;
+  int timeOutToReconnect;
   int secondsToTimeOut;
 
   Channel(int secondsToTimeOut) {
@@ -34,8 +34,7 @@ abstract class Channel {
 
     onHearBeat.listen((events) {
 
-      Settings.instance.logger.log(Level.INFO, 'Received heartbeat event from $name channel.');
-      resetTimeOut();
+      Settings.instance.logger.log(Level.FINE, 'Received heartbeat event from $name channel.');
 
     });
 
@@ -51,6 +50,7 @@ abstract class Channel {
       if (webSocket.readyState == WebSocket.OPEN) {
 
         await disconnect();
+        await new Future.delayed(new Duration(minutes: 1));
         await connect();
 
       }
@@ -61,17 +61,17 @@ abstract class Channel {
 
   void startStallTimer() {
 
-    timeOut = secondsToTimeOut;
+    timeOutToReconnect = secondsToTimeOut;
 
     timer = new Timer.periodic(new Duration(seconds: 1),(Timer timer) {
 
-      timeOut--;
+      timeOutToReconnect--;
 
-      if (timeOut == 0) {
+      if (timeOutToReconnect == 0) {
 
         onStallController.add('Channel $name is stalled');
 
-        resetTimeOut();
+        resetTimeOutToReconnect();
 
       }
 
@@ -82,7 +82,7 @@ abstract class Channel {
   void stopStallTimer() {
 
     timer.cancel();
-    timeOut = secondsToTimeOut;
+    timeOutToReconnect = secondsToTimeOut;
 
   }
 
@@ -105,9 +105,9 @@ abstract class Channel {
   }
 
   /// Resets the timer to the initial value
-  void resetTimeOut() {
+  void resetTimeOutToReconnect() {
 
-    timeOut = secondsToTimeOut;
+    timeOutToReconnect = secondsToTimeOut;
 
   }
 
@@ -116,6 +116,6 @@ abstract class Channel {
   Stream<List> get onStall => onStallController.stream;
   Stream<List> get onHearBeat => onHeartBeatController.stream;
 
-  bool get isAlive => timeOut > 0;
+  bool get isAlive => timeOutToReconnect > 0;
 
 }

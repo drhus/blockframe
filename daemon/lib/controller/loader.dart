@@ -32,6 +32,9 @@ class Loader {
 
         await Database.instance.bitfinex.saveCandles(data);
 
+        // Resets the timeOut to reconnect each time we successfully save data
+        bitfinexChannel.resetTimeOutToReconnect();
+
       }
 
       catch (exception,stackTrace) {
