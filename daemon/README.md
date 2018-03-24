@@ -11,35 +11,22 @@ The daemon subscribes to each of these websockets channels and listen for events
 
 # Installation
 
-Dart
-----
-
-You need to install the Dart SDK. Instructions are available here: https://www.dartlang.org/install
-
-After you install it, you need to run _pub get_ at this project root folder in order to fetch dependencies. 
-
-Then run the file **main.dart** file inside the _bin_ folder.
-
-For faster startups, use the [--snapshots](https://www.dartlang.org/dart-vm/tools/dart-vm#snapshot-option) parameters of the dart command line program. Example:
-
-`dart --snapshot=blockframe-daemon main.dart`
-
-If you're using Linux you can also run dart snapshots just as an executable file by using [update-binfmts]() 
-
-sudo update-binfmts --package dart --install dart-script /usr/bin/dart --magic '\xf5\xf5\xdc\xdc'
+After you install the Dart SDK as mentioned in the main README.md file, run
+__pub get__ in order to fetch dependencies. 
 
 Run
 ---
 
+Create a snapshot of the `main.dart` file:
+
+`dart --snapshot=blockframe-daemon main.dart`
+
+Now run the daemon by using 
+
 `dart blockframe-daemon`
 
-Upon start the daemon will save Bitfinex candle tick data to a collection called _bitfinex_candle_ and as soon as new block frames are received it will save the data inside the _bitcoin_block_ collection. 
+If you are on Linux and installed **update-binfmts** add the execute flag to blockframe-daemon snapshot:
 
-Mongo
------
+`chmod a+x blockframe-daemon`
 
-You also need to install the mongodb server.
-
-https://docs.mongodb.com/manual/installation/
-
-After you install it, create a database called blockframe. The daemon connects to the default _27017_ port.
+Now you can run the blockframe-daemon just as any other executable on the system.

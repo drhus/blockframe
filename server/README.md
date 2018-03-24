@@ -13,6 +13,8 @@ Fetches the last {_number_} blocks
 
 Fetches block {_first_} through { _last_ } 
 
+Example:
+
 ````
 
 [
@@ -63,24 +65,29 @@ The daemon subscribes to each of these websockets channels and listen for events
 
 # Installation
 
-Dart
-----
-
-You need to install the Dart SDK. Instructions are available here: https://www.dartlang.org/install
-
-Then run the file **main.dart** file inside the _bin_ folder.
-
-For faster startups, use the [--snapshots](https://www.dartlang.org/dart-vm/tools/dart-vm#snapshot-option) parameters of the dart command line program. Example:
-
-`dart --snapshot=blockframe-server main.dart`
+After you install the Dart SDK as mentioned in the main README.md file, run
+__pub get__ in order to fetch dependencies. 
 
 Run
 ---
 
-`dart blockframe-daemon`
+Create a snapshot of the `main.dart` file:
+
+`dart --snapshot=blockframe-server main.dart`
+
+Now run the daemon by using 
+
+`dart blockframe-server`
+
+If you are on Linux and installed **update-binfmts** add the execute flag to blockframe-daemon snapshot:
+
+`chmod a+x blockframe-server`
+
+Now you can run the blockframe-server just as any other executable on the system.
+
+Run
+---
+
+`dart blockframe-server`
 
 The application will start a HTTP server that listens to connections on port _8000_. It spawn isolates in order to handle incoming connections through the available cores at the local machine, thanks to the [Acqueduct Framework](https://aqueduct.io/).
-
-If you're using Linux you can also run dart snapshots just as an executable file by using [update-binfmts]() 
-
-sudo update-binfmts --package dart --install dart-script /usr/bin/dart --magic '\xf5\xf5\xdc\xdc'
