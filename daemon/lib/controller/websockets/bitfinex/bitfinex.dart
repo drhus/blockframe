@@ -12,7 +12,7 @@ import 'requests.dart';
 
 class BitfinexChannel extends Channel {
 
-  StreamController _onCandlesController = new StreamController.broadcast();
+  StreamController _onCandlesController;
 
   Db database;
   DbCollection candles;
@@ -26,6 +26,7 @@ class BitfinexChannel extends Channel {
 
   Future connect() async {
 
+    openStreams();
     webSocket = await WebSocket.connect(url);
 
     switch(webSocket.readyState) {
@@ -79,7 +80,23 @@ class BitfinexChannel extends Channel {
   Future disconnect() async {
 
     await webSocket.close();
+
     onDisconnectController.add(webSocket.readyState);
+    closeStreams();
+
+  }
+
+  void openStreams() {
+
+    super.openStreams();
+    _onCandlesController = new StreamController.broadcast();
+
+  }
+
+  void closeStreams() {
+
+    super.closeStreams();
+    _onCandlesController.close();
 
   }
 

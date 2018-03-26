@@ -9,10 +9,10 @@ abstract class Channel {
   String name;
   String url;
 
-  StreamController onConnectController = new StreamController.broadcast();
-  StreamController onDisconnectController = new StreamController.broadcast();
-  StreamController onStallController = new StreamController.broadcast();
-  StreamController onHeartBeatController = new StreamController.broadcast();
+  StreamController onConnectController;
+  StreamController onDisconnectController;
+  StreamController onStallController;
+  StreamController onHeartBeatController;
 
   WebSocket webSocket;
 
@@ -24,38 +24,6 @@ abstract class Channel {
   Channel(int secondsToTimeOut) {
 
     this.secondsToTimeOut = secondsToTimeOut;
-
-    onConnect.listen((events) {
-
-      Settings.instance.logger.log(Level.INFO,'Connected to $name channel');
-      startStallTimer();
-
-    });
-
-    onHearBeat.listen((events) {
-
-      Settings.instance.logger.log(Level.FINE, 'Received heartbeat event from $name channel.');
-
-    });
-
-    onDisconnect.listen((events) {
-
-      Settings.instance.logger.log(Level.INFO, 'Disconnected from $name channel');
-      stopStallTimer();
-
-    });
-
-    onStall.listen((events) async {
-
-      if (webSocket.readyState == WebSocket.OPEN) {
-
-        await disconnect();
-        await new Future.delayed(new Duration(minutes: 1));
-        await connect();
-
-      }
-
-    });
 
   }
 
@@ -88,6 +56,64 @@ abstract class Channel {
 
   Future connect();
   Future disconnect();
+
+  void closeStreams() {
+
+    onConnectController.close();
+    onDisconnectController.close();
+    onStallController.close();
+    onHeartBeatController.close();
+
+  }
+
+  void openStreams() {
+
+    onConnectController = new StreamController.broadcast();
+    onDisconnectController = new StreamController.broadcast();
+    onStallController = new StreamController.broadcast();
+    onHeartBeatController = new StreamController.broadcast();
+
+    addListeners();
+
+  }
+
+  void addListeners() {
+
+    onConnect.listen((events) {
+
+      openStreams();
+
+      Settings.instance.logger.log(Level.INFO,'Connected to $name channel');
+      startStallTimer();
+
+    });
+
+    onHearBeat.listen((events) {
+
+      Settings.instance.logger.log(Level.FINE, 'Received heartbeat event from $name channel.');
+
+    });
+
+    onDisconnect.listen((events) {
+
+      Settings.instance.logger.log(Level.INFO, 'Disconnected from $name channel');
+      stopStallTimer();
+
+    });
+
+    onStall.listen((events) async {
+
+      if (webSocket.readyState == WebSocket.OPEN) {
+
+        await disconnect();
+        await new Future.delayed(new Duration(minutes: 1));
+        await connect();
+
+      }
+
+    });
+
+  }
 
   onDone() {
 
