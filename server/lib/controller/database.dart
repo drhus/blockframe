@@ -40,9 +40,7 @@ class Database {
 
   Future<List<Map>> fetchLastBlocks({blocks: int}) async {
 
-    List<Map<dynamic,dynamic>> list = await db.collection('bitcoin_block').find(where.sortBy('time',descending: true).limit(blocks)).toList();
-
-    list.sort((Map b,Map a) => (a['height'] as int).compareTo(b['height'] as int));
+    List<Map<dynamic,dynamic>> list = await db.collection('bitcoin_block').find(where.sortBy('height',descending: true).limit(blocks)).toList();
 
     return list;
 
