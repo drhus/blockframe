@@ -22,7 +22,9 @@ class BlockChainChannel extends Channel {
 
   Future connect() async {
 
-    openStreams();
+    openDefaultStreams();
+    _onNewBlockController = new StreamController.broadcast();
+
     webSocket = await WebSocket.connect(url);
 
     switch(webSocket.readyState) {
@@ -68,24 +70,15 @@ class BlockChainChannel extends Channel {
 
   }
 
-  void openStreams() {
-
-    super.openStreams();
-    _onNewBlockController = new StreamController.broadcast();
-
-  }
-
-  void closeStreams() {
-
-    super.closeStreams();
-    _onNewBlockController.close();
-
-  }
-
   Future disconnect() async {
 
     await webSocket.close();
+
     onDisconnectController.add(webSocket.readyState);
+
+    closeDefaultStreams();
+    _onNewBlockController.close();
+
 
   }
 

@@ -50,6 +50,9 @@ class Loader {
 
       try {
 
+        // Resets the timeOut to reconnect each time we successfully save data
+        blockChainChannel.resetTimeOutToReconnect();
+
         CustomCandle candle = await Database.instance.fetchCandleFromBlock(block);
         block['candle'] = candle.asMap;
 

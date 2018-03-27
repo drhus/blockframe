@@ -41,8 +41,8 @@ class Blockchain {
     var time = block['time'];
     var candle = block['candle'];
 
-    Settings.instance.logger.log(Level.INFO,'Saving block ${blue(height)}, timestamp: ${red(time)}');
-    Settings.instance.logger.log(Level.INFO,'Candle data: ${green(candle)}');
+    Settings.instance.logger.log(Level.INFO,'Saving block ${blue(height.toString())}, timestamp: ${red(time.toString())}');
+    Settings.instance.logger.log(Level.INFO,'Candle data: ${green(candle.toString())}');
 
     await blocksCollection.save(block);
 

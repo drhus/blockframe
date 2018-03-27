@@ -55,9 +55,15 @@ abstract class Channel {
   }
 
   Future connect();
-  Future disconnect();
+  Future disconnect() async {
 
-  void closeStreams() {
+    await webSocket.close();
+    onDisconnectController.add(webSocket.readyState);
+
+  }
+
+
+  void closeDefaultStreams() {
 
     onConnectController.close();
     onDisconnectController.close();
@@ -66,7 +72,7 @@ abstract class Channel {
 
   }
 
-  void openStreams() {
+  void openDefaultStreams() {
 
     onConnectController = new StreamController.broadcast();
     onDisconnectController = new StreamController.broadcast();
@@ -81,7 +87,7 @@ abstract class Channel {
 
     onConnect.listen((events) {
 
-      openStreams();
+      openDefaultStreams();
 
       Settings.instance.logger.log(Level.INFO,'Connected to $name channel');
       startStallTimer();
@@ -106,7 +112,7 @@ abstract class Channel {
       if (webSocket.readyState == WebSocket.OPEN) {
 
         await disconnect();
-        await new Future.delayed(new Duration(minutes: 1));
+        await new Future.delayed(new Duration(seconds: 10));
         await connect();
 
       }

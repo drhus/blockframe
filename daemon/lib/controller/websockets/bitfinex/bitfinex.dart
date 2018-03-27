@@ -26,7 +26,9 @@ class BitfinexChannel extends Channel {
 
   Future connect() async {
 
-    openStreams();
+    openDefaultStreams();
+    _onCandlesController = new StreamController.broadcast();
+
     webSocket = await WebSocket.connect(url);
 
     switch(webSocket.readyState) {
@@ -82,20 +84,22 @@ class BitfinexChannel extends Channel {
     await webSocket.close();
 
     onDisconnectController.add(webSocket.readyState);
-    closeStreams();
+
+    _onCandlesController.close();
+    closeDefaultStreams();
 
   }
 
   void openStreams() {
 
-    super.openStreams();
+    openDefaultStreams();
     _onCandlesController = new StreamController.broadcast();
 
   }
 
   void closeStreams() {
 
-    super.closeStreams();
+    closeDefaultStreams();
     _onCandlesController.close();
 
   }
