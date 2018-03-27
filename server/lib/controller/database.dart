@@ -42,7 +42,7 @@ class Database {
 
     List<Map<dynamic,dynamic>> list = await db.collection('bitcoin_block').find(where.sortBy('time',descending: true).limit(blocks)).toList();
 
-    list.sort((Map a,Map b) => (a['height'] as int).compareTo(b['height'] as int));
+    list.sort((Map b,Map a) => (a['height'] as int).compareTo(b['height'] as int));
 
     return list;
 
