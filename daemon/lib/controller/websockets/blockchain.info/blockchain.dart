@@ -11,7 +11,9 @@ import 'requests.dart';
 
 class BlockChainChannel extends Channel {
 
-  BlockChainChannel({int secondsToTimeOut = 600}) : super(secondsToTimeOut) {
+  BlockChainChannel() {
+
+    pingRequest = Requests.ping;
 
     name = 'Blockchain';
     url  = 'wss://ws.blockchain.info/inv';
@@ -32,12 +34,7 @@ class BlockChainChannel extends Channel {
       case WebSocket.OPEN:
 
         onConnectController.add(webSocket.readyState);
-
-        webSocket.add(Requests.ping);
         webSocket.add(Requests.subscribeToBlocks);
-
-        // Ping the server once per minute
-        new Future.delayed(new Duration(minutes: 5)).then((event) => webSocket.add(Requests.ping));
 
         webSocket.listen((event) {
 
@@ -48,8 +45,7 @@ class BlockChainChannel extends Channel {
 
             case 'pong':
 
-            // Adds channel ID to the stream
-              onHeartBeatController.add(data[0]);
+              onPongController.add(data);
               break;
 
             case 'block':
@@ -65,6 +61,8 @@ class BlockChainChannel extends Channel {
           }},
 
           onDone: onDone, onError: onError);
+
+        break;
 
     }
 

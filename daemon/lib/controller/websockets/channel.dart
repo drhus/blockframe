@@ -6,6 +6,8 @@ import 'package:logging/logging.dart';
 
 abstract class Channel {
 
+  String pingRequest;
+
   String name;
   String url;
 
@@ -13,23 +15,26 @@ abstract class Channel {
   StreamController onDisconnectController;
   StreamController onStallController;
   StreamController onHeartBeatController;
+  StreamController onPongController;
 
   WebSocket webSocket;
 
   Timer timer;
+  Timer pingTimer;
 
   int timeOutToReconnect;
-  int secondsToTimeOut;
-
-  Channel(int secondsToTimeOut) {
-
-    this.secondsToTimeOut = secondsToTimeOut;
-
-  }
+  static const int secondsToTimeOut = 10;
 
   void startStallTimer() {
 
     timeOutToReconnect = secondsToTimeOut;
+
+    // Ping the server once per minute
+    pingTimer = new Timer.periodic(new Duration(seconds: Channel.secondsToTimeOut),(Timer timer) {
+
+      webSocket.add(pingRequest);
+
+    });
 
     timer = new Timer.periodic(new Duration(seconds: 1),(Timer timer) {
 
@@ -50,7 +55,9 @@ abstract class Channel {
   void stopStallTimer() {
 
     timer.cancel();
-    timeOutToReconnect = secondsToTimeOut;
+    pingTimer.cancel();
+
+    resetTimeOutToReconnect();
 
   }
 
@@ -62,13 +69,13 @@ abstract class Channel {
 
   }
 
-
   void closeDefaultStreams() {
 
     onConnectController.close();
     onDisconnectController.close();
     onStallController.close();
     onHeartBeatController.close();
+    onPongController.close();
 
   }
 
@@ -78,6 +85,7 @@ abstract class Channel {
     onDisconnectController = new StreamController.broadcast();
     onStallController = new StreamController.broadcast();
     onHeartBeatController = new StreamController.broadcast();
+    onPongController = new StreamController.broadcast();
 
     addListeners();
 
@@ -87,10 +95,8 @@ abstract class Channel {
 
     onConnect.listen((events) {
 
-      openDefaultStreams();
-
-      Settings.instance.logger.log(Level.INFO,'Connected to $name channel');
       startStallTimer();
+      Settings.instance.logger.log(Level.INFO,'Connected to $name channel');
 
     });
 
@@ -100,22 +106,17 @@ abstract class Channel {
 
     });
 
-    onDisconnect.listen((events) {
+    onPong.listen((events) {
 
-      Settings.instance.logger.log(Level.INFO, 'Disconnected from $name channel');
-      stopStallTimer();
+      resetTimeOutToReconnect();
+      Settings.instance.logger.log(Level.INFO, 'Received pong event from $name channel - $events');
 
     });
 
-    onStall.listen((events) async {
+    onDisconnect.listen((events) {
 
-      if (webSocket.readyState == WebSocket.OPEN) {
-
-        await disconnect();
-        await new Future.delayed(new Duration(seconds: 10));
-        await connect();
-
-      }
+      stopStallTimer();
+      Settings.instance.logger.log(Level.INFO, 'Disconnected from $name channel');
 
     });
 
@@ -147,6 +148,7 @@ abstract class Channel {
   Stream<List> get onDisconnect => onDisconnectController.stream;
   Stream<List> get onStall => onStallController.stream;
   Stream<List> get onHearBeat => onHeartBeatController.stream;
+  Stream<List> get onPong => onPongController.stream;
 
   bool get isAlive => timeOutToReconnect > 0;
 

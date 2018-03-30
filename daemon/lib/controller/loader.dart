@@ -6,12 +6,13 @@ import 'package:blockframe_daemon/controller/database/database.dart';
 import 'package:blockframe_daemon/controller/settings.dart';
 import 'package:blockframe_daemon/controller/websockets/bitfinex/bitfinex.dart';
 import 'package:blockframe_daemon/controller/websockets/blockchain.info/blockchain.dart';
+import 'package:blockframe_daemon/controller/websockets/channel.dart';
 import 'package:blockframe_daemon/model/custom_candle.dart';
 
 class Loader {
 
-  BlockChainChannel blockChainChannel = new BlockChainChannel(secondsToTimeOut: 600);
-  BitfinexChannel bitfinexChannel = new BitfinexChannel(secondsToTimeOut: 30);
+  BlockChainChannel blockChainChannel = new BlockChainChannel();
+  BitfinexChannel bitfinexChannel = new BitfinexChannel();
 
   void start() async {
 
@@ -21,6 +22,24 @@ class Loader {
     await blockChainChannel.connect();
 
     await listenToChannels();
+
+  }
+
+  void reconnect(events) async {
+
+    Settings.instance.logger.log(Level.WARNING, events);
+
+    if (bitfinexChannel.webSocket.readyState == WebSocket.OPEN) {
+
+      await bitfinexChannel.disconnect();
+      await blockChainChannel.disconnect();
+
+      await new Future.delayed(new Duration(seconds: Channel.secondsToTimeOut));
+
+      await bitfinexChannel.connect();
+      await blockChainChannel.connect();
+
+    }
 
   }
 
@@ -45,6 +64,9 @@ class Loader {
       }
 
     });
+
+    bitfinexChannel.onStall.listen((events) async => reconnect);
+    blockChainChannel.onStall.listen((events) async => reconnect);
 
     blockChainChannel.onNewBlock.listen((Map block) async {
 

@@ -12,12 +12,14 @@ import 'requests.dart';
 
 class BitfinexChannel extends Channel {
 
+  int id;
+
   StreamController _onCandlesController;
 
   Db database;
   DbCollection candles;
 
-  BitfinexChannel({int secondsToTimeOut = 600}) : super(secondsToTimeOut) {
+  BitfinexChannel() {
 
     name = 'Bitfinex';
     url = 'wss://api.bitfinex.com/ws/2';
@@ -35,19 +37,45 @@ class BitfinexChannel extends Channel {
 
       case WebSocket.OPEN:
 
-        onConnectController.add(webSocket.readyState);
-
         webSocket.add(Requests.subscribeToCandles);
 
         webSocket.listen((event) {
 
-          var data = json.decode(event);
-          Settings.instance.logger.log(Level.FINE,'Raw data received from websocket: $data');
+          var response = json.decode(event);
+          Settings.instance.logger.log(Level.FINE,'Raw data received from websocket: $response');
 
-          if (data is List) {
+          if (response is Map) {
+
+            if (response.containsKey('event')) {
+
+              switch (response['event']) {
+
+                case 'pong':
+
+                  onPongController.add(response);
+                  resetTimeOutToReconnect();
+
+                  break;
+
+                case 'subscribed':
+
+                  id = response['chanId'];
+                  pingRequest = Requests.ping(id);
+
+                  onConnectController.add(webSocket.readyState);
+
+                  break;
+
+              }
+
+            }
+
+          }
+
+          if (response is List) {
 
             // First element is the channel ID
-            for (var details in data.sublist(1,data.length)) { // 1521828120000
+            for (var details in response.sublist(1,response.length)) {
 
               if (details is List) {
 
@@ -74,6 +102,8 @@ class BitfinexChannel extends Channel {
         },
 
         onDone: onDone, onError: onError);
+
+      break;
 
     }
 
@@ -107,3 +137,4 @@ class BitfinexChannel extends Channel {
   Stream<List> get onCandles => _onCandlesController.stream;
 
 }
+
