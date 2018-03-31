@@ -1,7 +1,7 @@
 <center><strong>blockframe</strong>
- <p><i>Crypto charting over the block-generation period**.</i></p></center>
+ <p><i>Crypto charting over the block-generation period.</i></p></center>
 
-Constructing a blockFrame chart as a graphical representation of a series of crypto asset price movements over block heights, - instead of time - where the basic graphical frame is one block, and the multipliers n blocks used for diverse graphical chart frames. blockFrame instead of timeframe charting, for a universe - Blockchain - where objective time doesn't exist, and succession materialize only by mining new blocks. 
+ Constructing a blockFrame chart as a graphical representation of a series of crypto asset price movements over block heights, - instead of time - where the basic graphical frame is one block, and the multipliers n blocks used for diverse graphical chart frames. blockFrame instead of timeframe charting, for a universe - Blockchain - where objective time doesn't exist, and succession materialize only by mining new blocks. 
 
  Conventional charts like candlestick, bar, line charts print a new units (new candle, bar or point) every hour, day, week or another time-frame interval the observer chooses as his period setting, on the other hand, blockFrames chart plots crypto asset price movements without taking into consideration the passage of time in the static constant time-frame; but over dynamic block-generation period of time, the time to mine a new block. You might set 1 block interval, which mean that the blockframe chart will show you a new candle or bar on the chart every time new block was minted.
 
@@ -27,6 +27,7 @@ Constructing a blockFrame chart as a graphical representation of a series of cry
 1. blockFrame - Alpha // Current 
  - [x]  basic implementation of blockFrame concept on bitcoin using public API for both block hight and price
  - [x]  Connect Highcharts Interactive JavaScript Candlesticks charts 
+ - [x]  . 
 
 2. blockFrame V02
  - [ ]  High-quality instant price information of current Bitcoin rate from bitcoinaverage or others
