@@ -1,7 +1,5 @@
-# blockframe
-### Crypto charting over the block-generation period
-<center>This text will be centered.
-<p>So will this paragraph.</p></center>
+<center><strong>blockframe</strong>
+<p>Crypto charting over the block-generation period.</p></center>
 
 Constructing a blockFrame chart as a graphical representation of a series of crypto asset price movements over block heights, - instead of time - where the basic graphical frame is one block, and the multipliers n blocks used for diverse graphical chart frames. blockFrame instead of timeframe charting, for a universe - Blockchain - where objective time doesn't exist, and succession materialize only by mining new blocks. 
 
