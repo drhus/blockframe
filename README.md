@@ -47,7 +47,7 @@ Constructing a blockFrame chart as a graphical representation of a series of cry
  * Fork [blockFrame](https://github.com/drhus/blockframe) Github repository: Fix a bug or implement a new feature.
  * Report issues and/or make suggestions
  * Donate: to developmnet fund to accelerate the efforts so a reasonably usable version became soon available :) 
-  * BTC:  
-  * ETH:
+   * BTC:  
+   * ETH:
   
 
