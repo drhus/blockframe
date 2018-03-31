@@ -10,10 +10,10 @@ Constructing a blockFrame chart as a graphical representation of a series of cry
 *blockFrame - Alpha // Current basic implementation of blockFrame concept on bitcoin using public API for both block hight and price*
 
 1. blockFrame V01
-  * High-quality instant price information of current Bitcoin rate from bitcoinaverage or others
-  * store locally historical price data of BTC with smallest incremental time-frame possible (ideally tick data) for last years
-  * redundant matching mechanism to calculate between the time-stamps of two blocks the Open, highest high, lowest low, and close and calculate the volume
-  * test alternative charting libraries (ex. Chart.js, Highcharts, C3, NVD3, Plotly.js, Chartist, Victory or Tradingview)
+  [ ] High-quality instant price information of current Bitcoin rate from bitcoinaverage or others
+  [ ] store locally historical price data of BTC with smallest incremental time-frame possible (ideally tick data) for last years
+  [ ] redundant matching mechanism to calculate between the time-stamps of two blocks the Open, highest high, lowest low, and close and calculate the volume
+  [ ] test alternative charting libraries (ex. Chart.js, Highcharts, C3, NVD3, Plotly.js, Chartist, Victory or Tradingview)
 
 
 2. blockFrame V02
