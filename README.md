@@ -7,26 +7,27 @@ Constructing a blockFrame chart as a graphical representation of a series of cry
  Conventional charts like candlestick, bar, line charts print a new units (new candle, bar or point) every hour, day, week or another time-frame interval the observer chooses as his period setting, on the other hand, blockFrames chart plots crypto asset price movements without taking into consideration the passage of time in the static constant time-frame; but over dynamic block-generation period of time, the time to mine a new block. You might set 1 block interval, which mean that the blockframe chart will show you a new candle or bar on the chart every time new block was minted.
 
 # Roadmap
-*blockFrame - Alpha // Current basic implementation of blockFrame concept on bitcoin using public API for both block hight and price*
+0. blockFrame - Alpha // Current 
+ - [x]  basic implementation of blockFrame concept on bitcoin using public API for both block hight and price*
 
-1. blockFrame V01
+2. blockFrame V02
  - [ ]  High-quality instant price information of current Bitcoin rate from bitcoinaverage or others
  - [ ]  store locally historical price data of BTC with smallest incremental time-frame possible (ideally tick data) for last years
  - [ ]  redundant matching mechanism to calculate between the time-stamps of two blocks the Open, highest high, lowest low, and close and calculate the volume
  - [ ]  test alternative charting libraries (ex. Chart.js, Highcharts, C3, NVD3, Plotly.js, Chartist, Victory or Tradingview)
 
 
-2. blockFrame V02
+2. blockFrame V03
  - [ ]  block height to be obtained locally (full node) instead of current blockchain.info API
  - [ ]  locally storing additional relevant information: Number of Transactions, difficulty, hashrate, blocksize etc
  - [ ]  mapping the additional informations to block hight on the chart
 
-3. blockFrame V03 :: **Reasonably usable version**
+3. blockFrame V04 :: **Reasonably usable version**
  * Implement blockframe with TradingView (ability to use the already builtin technical analysis functionalities)
  * Add Ethereum 
  * add events as optional view comment on specific block height (block height of major Fork, halfling, difficulty adjustment, upgrade etc)
-4. blockFrame V04 :: blockframe for all major 20 cryptocurrencies
-5. blockFrame V05 :: provide developer API for historical blockframe data of all major cryptocurrencies
+4. blockFrame V05 :: blockframe for all major 20 cryptocurrencies
+5. blockFrame V06 :: provide developer API for historical blockframe data of all major cryptocurrencies
 
 # Contribute
  * Fork [blockFrame](https://github.com/drhus/blockframe) Github repository: Fix a bug or implement a new feature.
