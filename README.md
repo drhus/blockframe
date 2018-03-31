@@ -6,7 +6,7 @@ Constructing a blockFrame chart as a graphical representation of a series of cry
 
  Conventional charts like candlestick, bar, line charts print a new units (new candle, bar or point) every hour, day, week or another time-frame interval the observer chooses as his period setting, on the other hand, blockFrames chart plots crypto asset price movements without taking into consideration the passage of time in the static constant time-frame; but over dynamic block-generation period of time, the time to mine a new block. You might set 1 block interval, which mean that the blockframe chart will show you a new candle or bar on the chart every time new block was minted.
 
-## Roadmap
+# Roadmap
 *blockFrame - Alpha // Current basic implementation of blockFrame concept on bitcoin using public API for both block hight and price*
 
 1. blockFrame V01
@@ -29,18 +29,21 @@ Constructing a blockFrame chart as a graphical representation of a series of cry
 5. blockFrame V05 :: provide developer API for historical blockframe data of all major cryptocurrencies
 
 # Contribute
- * Fork blockFrame Github repository: Fix a bug or implement a new feature.
+ * Fork [blockFrame](https://github.com/drhus/blockframe) Github repository: Fix a bug or implement a new feature.
  * Report issues and/or make suggestions
  * Donate: to developmnet fund to accelerate the efforts so a reasonably usable version became soon available :) 
   * BTC:  
   * ETH:
   
 # Why
- * Native blockchain experiance
+ **Native blockchain experiance**
 > No matter how much time is passed minutes or hours, succession materialize only by mining new blocks, and visulizing the data not just price data, but volume, and transactions, hashrate, blocksize only possible with highest accurecy over block numbers.
 
-* Data Visulization for Crypto
+ **Data Visulization for Crypto**
 > Choose settings depending on the criteria you value the most
 
-* The 'Go to..' block height
+ **The 'Go to..' block height**
 > Cryptocurrencies events happen on specific block height, having blockFrame chart would allow us to jump 'Go to..' specific  block number and see on the chart what happen then, the block where the fork happend or halving or difficulty adjusment etc.
+
+# Paper
+[blockFrame Original Paper](https://ssrn.com/abstract=3064115 )
