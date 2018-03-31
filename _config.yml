@@ -5,3 +5,9 @@ show_downloads: true
 google_analytics: UA-673683-x
 JEKYLL_ENV: production
 
+
+#google:
+#  webmaster-tools: xx
+
+# You can find your shortname on the Settings page of your Disqus account
+# disqus:
