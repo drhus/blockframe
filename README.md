@@ -36,11 +36,11 @@ Constructing a blockFrame chart as a graphical representation of a series of cry
   * ETH:
   
 # Why
-## Native blockchain experiance
-No matter how much time is passed minutes or hours, succession materialize only by mining new blocks, and visulizing the data not just price data, but volume, and transactions, hashrate, blocksize only possible with highest accurecy over block numbers.
+ * Native blockchain experiance
+> No matter how much time is passed minutes or hours, succession materialize only by mining new blocks, and visulizing the data not just price data, but volume, and transactions, hashrate, blocksize only possible with highest accurecy over block numbers.
 
-## Data Visulization for Crypto
-Choose settings depending on the criteria you value the most
+* Data Visulization for Crypto
+> Choose settings depending on the criteria you value the most
 
-## The 'Go to..' block height
-Cryptocurrencies events happen on specific block height, having blockFrame chart would allow us to jump 'Go to..' specific block number and see on the chart what happen then, the block where the fork happend or halving or difficulty adjusment etc.
+* The 'Go to..' block height
+> Cryptocurrencies events happen on specific block height, having blockFrame chart would allow us to jump 'Go to..' specific  block number and see on the chart what happen then, the block where the fork happend or halving or difficulty adjusment etc.
