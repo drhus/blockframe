@@ -8,6 +8,10 @@ Constructing a blockFrame chart as a graphical representation of a series of cry
 # Paper
 [blockFrame Original Paper](https://ssrn.com/abstract=3064115 )
 
+# blockFrame chart
+ <div id="blockFrame-container" style="height: 50vh; width: 50vw;"></div>
+
+
 # Why
  **Native blockchain experiance**
 > No matter how much time is passed minutes or hours, succession materialize only by mining new blocks, and visulizing the data not just price data, but volume, and transactions, hashrate, blocksize only possible with highest accurecy over block numbers.
