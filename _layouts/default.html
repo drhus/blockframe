@@ -13,6 +13,60 @@
     <![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://code.highcharts.com/stock/highstock.js"></script>
+  <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+  <script type="text/javascript">
+    var blocksLOCH = new Array();
+  
+//$.getJSON('http://localhost:8000/last/100', function (data) {
+$.getJSON('http://blockframe.xyz:8000/last/100', function (data) {
+    data.forEach(element => {
+        let block = new Array;
+        let buffer;
+        var candle = element.candle.candle;
+              block.push(
+                element.height,
+                candle.open,
+                candle.high,
+                candle.low,
+                candle.close  
+            );
+        console.log(block);
+        blocksLOCH.push(block);
+    });
+// create the chart
+Highcharts.stockChart('blockFrame-container', {
+    title: {
+        text: 'Bitcoin Block Height x USD Price'
+    },
+    xAxis: {
+        labels: {
+            format: '{value} B'
+        },
+        type: 'linear',
+        tickInterval: 1,
+        minRange: 5,
+        title: {
+            text: 'Block Height'
+        }
+    },
+    rangeSelector: {
+		enabled: false
+    },
+
+    series: [{
+        name: 'Bitcoin',
+        type: 'candlestick',
+        data: blocksLOCH,
+        tooltip: {
+            valueDecimals: 2
+        }
+    }]
+});
+
+});
+  </script>
   </head>
   <body>
 
