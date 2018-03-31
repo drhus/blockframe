@@ -1,21 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-
-  <meta charset="UTF-8">
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+  <link rel="stylesheet" href="theme.css" type="text/css">
+  <link rel="icon">
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <script src="https://code.highcharts.com/stock/highstock.js"></script>
   <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
-
-  <script type="javascript"></script>
-
   <script type="text/javascript">
-
-      var blocksLOCH = new Array();
+    var blocksLOCH = new Array();
   
-$.getJSON('http://127.0.0.1:8000/last/100', function (data) {
+//$.getJSON('http://localhost:8000/last/100', function (data) {
+$.getJSON('http://localhost:8000/last/100', function (data) {
 
     data.forEach(element => {
             
@@ -77,21 +76,7 @@ Highcharts.stockChart('container', {
     },
 
     rangeSelector: {
-        buttons: [{
-            type: 'hour',
-            count: 1,
-            text: '1h'
-        }, {
-            type: 'day',
-            count: 1,
-            text: '1D'
-        }, {
-            type: 'all',
-            count: 1,
-            text: 'All'
-        }],
-        selected: 1,
-        inputEnabled: false
+		enabled: false
     },
 
     series: [{
@@ -106,28 +91,172 @@ Highcharts.stockChart('container', {
 });
 
 });
-
-  
   </script>
-  
-  <style>
-  
-    body {
-
-        display: flex;
-        flex-direction: row;
-
-    }
-  
-  </style>
-
-  <title>BlockFrame Charting</title>
-
 </head>
 
 <body>
-
-    <div id="container" style="height: 100vh; width: 100vw;"></div>
+  <nav class="navbar navbar-expand-md bg-primary navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#"><b>blockFrame</b></a>
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent" aria-controls="navbar2SupportedContent" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
+      <div class="collapse navbar-collapse text-center justify-content-end" id="navbar2SupportedContent">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="https://ssrn.com/abstract=3064115"><i class="fa d-inline fa-lg fa-envelope-o"></i> Contacts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#roadMap">Roadmap
+              <br> </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://ssrn.com/abstract=3064115">&nbsp;Paper
+              <br> </a>
+          </li>
+        </ul>
+        <a class="btn navbar-btn ml-2 text-white btn-secondary" href="https://github.com/drhus/blockframe"><i class="fa d-inline fa-lg fa-github"></i>&nbsp;View On GitHub</a>
+      </div>
+    </div>
+  </nav>
+  <div class="pt-5 text-white">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 text-md-left text-center align-self-center my-5 offset-md-4">
+          <h1 class="display-1 text-primary">blockFrame</h1>
+          <p class="lead text-primary">Crypto charting over the block-generation period</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="py-5">
+    <div class="container">
+      <div class="row">
+        <div class="">
+          <p class="text-justify">Constructing a blockFrame chart as a graphical representation of a series of crypto asset price movements over block heights, <i>- instead of time -</i> where the basic graphical frame is one block, and the multipliers <i>n</i> blocks used for
+            diverse graphical chart frames. blockFrame instead of timeframe charting, for a universe - Blockchain - where objective time doesn't exist, and succession materialize only by mining new blocks.
+            <br>
+            <br>&nbsp;Conventional charts like candlestick, bar, line charts print a new units (new candle, bar or point) every hour, day, week or another time-frame interval the observer chooses as his period setting, on the other hand, blockFrames chart
+            plots crypto asset price movements without taking into consideration the passage of time in the static constant time-frame; but over dynamic block-generation period of time, the time to mine a new block. You might set 1 block interval, which
+            mean that the blockframe chart will show you a new candle or bar on the chart every time new block was minted.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="py-5 text-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-12">
+              <h1 class="text-light">alpha</h1>
+              <div id="container" style="height: 50vh; width: 50vw;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="py-5 text-center" id="#roadMap">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-12 text-left">
+              <h1 class="">Roadmap
+                <br> </h1> <i>
+                blockFrame - Alpha // Current
+basic implementation of blockFrame concept on bitcoin using public API for both block hight and price
+              </i>
+              <ol class="">
+                <li>blockFrame V01
+                  <ul class="">
+                    <li>High-quality instant price information of current Bitcoin rate from bitcoinaverage or others </li>
+                    <li>store locally historical price data of BTC with smallest incremental time-frame possible (ideally tick data) for last years</li>
+                    <li>redundant matching mechanism to calculate between the time-stamps of two blocks the Open, highest high, lowest low, and close and calculate the volume</li>
+                    <li>test alternative charting libraries (ex. Chart.js, Highcharts, C3, NVD3, Plotly.js, Chartist, Victory or Tradingview) </li>
+                  </ul>
+                </li>
+                <li>blockFrame V02
+                  <ul class="">
+                    <li>block height to be obtained locally (full node) instead of current blockchain.info API</li>
+                    <li>locally storing additional relevant information: Number of Transactions, difficulty, hashrate, blocksize etc</li>
+                    <li>mapping the additional informations to block hight on the chart</li>
+                  </ul>
+                </li>
+                <li>blockFrame V03 :: <b>Reasonably usable version
+                  </b>
+                  <ul class="">
+                    <li>Implement blockframe with TradingView (ability to use the already builtin technical analysis functionalities) </li>
+                    <li>Add Ethereum&nbsp;</li>
+                    <li>add events as optional view comment on specific block height (block height of major Fork, halfling, difficulty adjustment, upgrade etc)</li>
+                  </ul>
+                </li>
+                <li>blockFrame V04 :: blockframe for all major 20 cryptocurrencies </li>
+                <li>blockFrame V05 :: provide developer API for historical blockframe data of all major cryptocurrencies</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="py-5 text-center bg-secondary text-dark">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-12 text-left">
+              <h1 class="">Contribute
+                <br> </h1>
+              <ul class="">
+                <li>Fork
+                  <a href="https://github.com/drhus/blockframe">blockFrame </a>Github repository: Fix a bug or implement a new feature.</li>
+                <li>Report
+                  <a href="https://github.com/drhus/blockframe/issues">issues</a> and/or make suggestions</li>
+                <li>Donate: to developmnet fund to accelerate the efforts so a <b>reasonably usable version</b> became soon available :)
+                  <br>&gt;&gt; BTC:&nbsp;
+                  <br>&gt;&gt; ETH:</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="py-5 bg-light">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <h2 class="pb-4 text-secondary">Why</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="align-self-center text-md-right text-center col-md-6">
+          <h3 class="text-primary">Native blockchain experiance</h3>
+          <p class="mb-5">No matter how much time is passed minutes or hours, succession materialize only by mining new blocks, and visulizing the data not just price data, but volume, and transactions, hashrate, blocksize only possible with highest accurecy over block
+            numbers.</p>
+          <h3 class="text-primary">Data Visulization for Crypto</h3>
+          <p class="mb-5">Choose settings depending on the criteria you value the most</p>
+        </div>
+        <div class="align-self-center text-md-left text-center col-md-6">
+          <h3 class="text-primary">The 'Go to..' block height</h3>
+          <p class="mb-5">Cryptocurrencies events happen on specific block height, having blockFrame chart would allow us to jump 'Go to..' specific block number and see on the chart what happen then, the block where the fork happend or halving or difficulty adjusment
+            etc..</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="py-5 bg-dark text-white">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 mt-3 text-center">
+          <p>2017 blockFrame</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 </body>
 
