@@ -20,3 +20,27 @@ Constructing a blockFrame chart as a graphical representation of a series of cry
  * block height to be obtained locally (full node) instead of current blockchain.info API
  * locally storing additional relevant information: Number of Transactions, difficulty, hashrate, blocksize etc
  * mapping the additional informations to block hight on the chart
+
+3. blockFrame V03 :: **Reasonably usable version**
+ * Implement blockframe with TradingView (ability to use the already builtin technical analysis functionalities)
+ * Add Ethereum 
+ * add events as optional view comment on specific block height (block height of major Fork, halfling, difficulty adjustment, upgrade etc)
+4. blockFrame V04 :: blockframe for all major 20 cryptocurrencies
+5. blockFrame V05 :: provide developer API for historical blockframe data of all major cryptocurrencies
+
+# Contribute
+ * Fork blockFrame Github repository: Fix a bug or implement a new feature.
+ * Report issues and/or make suggestions
+ * Donate: to developmnet fund to accelerate the efforts so a reasonably usable version became soon available :) 
+  * BTC:  
+  * ETH:
+  
+# Why
+## Native blockchain experiance
+No matter how much time is passed minutes or hours, succession materialize only by mining new blocks, and visulizing the data not just price data, but volume, and transactions, hashrate, blocksize only possible with highest accurecy over block numbers.
+
+## Data Visulization for Crypto
+Choose settings depending on the criteria you value the most
+
+## The 'Go to..' block height
+Cryptocurrencies events happen on specific block height, having blockFrame chart would allow us to jump 'Go to..' specific block number and see on the chart what happen then, the block where the fork happend or halving or difficulty adjusment etc.
