@@ -1,2 +1,3 @@
+JEKYLL_ENV=production
 theme: jekyll-theme-leap-day
 google_analytics = "UA-673683-x" 
