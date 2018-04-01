@@ -18,41 +18,39 @@ class Loader {
 
     await Database.instance.open();
 
-    await bitfinexChannel.connect();
-    await blockChainChannel.connect();
+    try {
 
-    await listenToChannels();
+      await _connect();
 
-  }
+      await _listenToBitfinexEvents();
+      await _listenToBlockChainInfoEvents();
 
-  void reconnect(events) async {
+    }
 
-    Settings.instance.logger.log(Level.WARNING, events);
+    on SocketException {
 
-    if (bitfinexChannel.webSocket.readyState == WebSocket.OPEN) {
+      Settings.instance.logger.log(Level.SEVERE,'An error ocurred while trying to access the servers. Please check your network connection');
+      Settings.instance.logger.log(Level.SEVERE,'Exiting ...');
 
-      await bitfinexChannel.disconnect();
-      await blockChainChannel.disconnect();
+    }
 
-      await new Future.delayed(new Duration(seconds: Channel.secondsToTimeOut));
+    catch (exception) {
 
-      await bitfinexChannel.connect();
-      await blockChainChannel.connect();
+      Settings.instance.logger.log(Level.SEVERE,exception);
+      exit(-1);
 
     }
 
   }
 
-  Future listenToChannels() async {
+  void _listenToBitfinexEvents() {
 
     bitfinexChannel.onCandles.listen((List data) async {
 
       try {
 
-        await Database.instance.bitfinex.saveCandles(data);
-
-        // Resets the timeOut to reconnect each time we successfully save data
         bitfinexChannel.resetTimeOutToReconnect();
+        await Database.instance.bitfinex.saveCandles(data);
 
       }
 
@@ -65,15 +63,27 @@ class Loader {
 
     });
 
-    bitfinexChannel.onStall.listen((events) async => reconnect);
-    blockChainChannel.onStall.listen((events) async => reconnect);
+    bitfinexChannel.onStall.listen((events) async {
+
+      _reconnect(events);
+
+    });
+
+  }
+
+  Future _listenToBlockChainInfoEvents() async {
+
+    blockChainChannel.onStall.listen((events) async {
+
+      _reconnect(events);
+
+    });
 
     blockChainChannel.onNewBlock.listen((Map block) async {
 
-      try {
+      blockChainChannel.resetTimeOutToReconnect();
 
-        // Resets the timeOut to reconnect each time we successfully save data
-        blockChainChannel.resetTimeOutToReconnect();
+      try {
 
         CustomCandle candle = await Database.instance.fetchCandleFromBlock(block);
         block['candle'] = candle.asMap;
@@ -90,6 +100,30 @@ class Loader {
       }
 
     });
+
+  }
+
+  Future _connect() async {
+
+    await bitfinexChannel.connect();
+    await blockChainChannel.connect();
+
+  }
+
+  Future _disconnect() async {
+
+    await bitfinexChannel.disconnect();
+    await blockChainChannel.disconnect();
+
+  }
+
+  void _reconnect(events) async {
+
+    Settings.instance.logger.log(Level.WARNING, events);
+
+    await _disconnect();
+    sleep(Channel.timeout);
+    await _connect();
 
   }
 

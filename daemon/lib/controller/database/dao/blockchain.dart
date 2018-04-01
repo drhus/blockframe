@@ -1,7 +1,6 @@
 library dao;
 
 import 'dart:async';
-import 'dart:math';
 
 import 'package:ansicolor/ansicolor.dart';
 import 'package:blockframe_daemon/controller/settings.dart';
@@ -17,13 +16,24 @@ class Blockchain {
 
   }
 
-  Future<List<int>> findLastest(Map block) async {
+  Future<int> findLastest(Map block) async {
 
-    num secondsToMicroseconds(num value) => value * pow(10,6);
+    var timestamp = (
 
-    List<Map> blocks = await blocksCollection.find(where.sortBy('time',descending: true).limit(1)).toList();
+        await blocksCollection
 
-    return [blocks.length > 0 ? secondsToMicroseconds(blocks.first['time']) : 0, secondsToMicroseconds(block['time'])];
+            .find(
+
+              where
+
+                  .sortBy('time',descending: true)
+                  .limit(1)
+
+            ).toList()
+
+    ).first['time'];
+
+    return timestamp;
 
   }
 

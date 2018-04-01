@@ -53,8 +53,6 @@ class BitfinexChannel extends Channel {
                 case 'pong':
 
                   onPongController.add(response);
-                  resetTimeOutToReconnect();
-
                   break;
 
                 case 'subscribed':

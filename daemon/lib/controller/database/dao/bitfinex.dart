@@ -17,6 +17,7 @@ class Bitfinex {
 
   }
 
+  /// [older] and [newer] should be in µ seconds
   Future<List<CustomCandle>> fetchCandles(int older, int newer) async {
 
     List<Map> pipeline = [
@@ -25,7 +26,7 @@ class Bitfinex {
         r'$project': {
 
           'luts': 1,
-          'diff': { r'$abs': { r'$subtract': [newer, r'$luts']}},
+          'diff': { r'$abs': { r'$subtract': [newer * 1000, r'$luts']}},
 
           'candle.mts': 1,
           'candle.open': 1,
@@ -40,7 +41,7 @@ class Bitfinex {
       { r'$sort': { 'diff': 1}},
 
       /* Get all entries between the last block and and previous one (last and penultimate) */
-      { r'$match': { 'luts': { r'$gte': older, r'$lte': newer}}},
+      { r'$match': { 'luts': { r'$gte': older * 1000, r'$lte': newer * 1000}}},
 
       { r'$sort': { 'luts': -1}}
 
@@ -75,7 +76,7 @@ class Bitfinex {
 
     CustomCandle candle = new CustomCandle.fromList(data);
 
-    Settings.instance.logger.log(Level.INFO,'Saving bitfinex candle ${greenPen(candle.asMap.toString())}');
+    Settings.instance.logger.log(Level.FINE,'Saving bitfinex candle ${greenPen(candle.asMap.toString())}');
     candlesCollection.insert(candle.asMap);
 
   }

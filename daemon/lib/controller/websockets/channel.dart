@@ -23,28 +23,31 @@ abstract class Channel {
   Timer pingTimer;
 
   int timeOutToReconnect;
-  static const int secondsToTimeOut = 10;
+
+  static final Duration pingTimeout = new Duration(seconds: 10);
+  static final Duration timeout = new Duration(seconds: 20);
+  static final Duration ticker = new Duration(seconds: 1);
 
   void startStallTimer() {
 
-    timeOutToReconnect = secondsToTimeOut;
+    timeOutToReconnect = timeout.inSeconds;
 
-    // Ping the server once per minute
-    pingTimer = new Timer.periodic(new Duration(seconds: Channel.secondsToTimeOut),(Timer timer) {
+    // First ping has no delay
+    webSocket.add(pingRequest);
+
+    pingTimer = new Timer.periodic(pingTimeout,(Timer timer) {
 
       webSocket.add(pingRequest);
 
     });
 
-    timer = new Timer.periodic(new Duration(seconds: 1),(Timer timer) {
+    timer = new Timer.periodic(ticker,(Timer timer) {
 
       timeOutToReconnect--;
 
       if (timeOutToReconnect == 0) {
 
         onStallController.add('Channel $name is stalled');
-
-        resetTimeOutToReconnect();
 
       }
 
@@ -109,7 +112,7 @@ abstract class Channel {
     onPong.listen((events) {
 
       resetTimeOutToReconnect();
-      Settings.instance.logger.log(Level.INFO, 'Received pong event from $name channel - $events');
+      Settings.instance.logger.log(Level.FINE, 'Received pong event from $name channel - $events');
 
     });
 
@@ -140,7 +143,7 @@ abstract class Channel {
   /// Resets the timer to the initial value
   void resetTimeOutToReconnect() {
 
-    timeOutToReconnect = secondsToTimeOut;
+    timeOutToReconnect = Channel.timeout.inSeconds;
 
   }
 
