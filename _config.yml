@@ -1,8 +1,8 @@
 theme: jekyll-theme-leap-day
 title: blockFrame --
-description: crypto assets charting over the block-generation period
+#description: crypto assets charting over the block-generation period
 show_downloads: true
-google_analytics: UA-673683-x
+#google_analytics: UA-673683-x
 # JEKYLL_ENV: production
 
 
