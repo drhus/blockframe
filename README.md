@@ -8,7 +8,7 @@
 # Paper
 [blockFrame Original Paper](https://ssrn.com/abstract=3064115 )
 
-# blockFrame chart
+# Chart 
  <div id="blockFrame-container" style="height: 50vh; width: 50vw;"></div>
 
 
