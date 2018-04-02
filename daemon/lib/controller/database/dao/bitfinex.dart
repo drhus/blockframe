@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:core';
+import 'dart:math';
 
 import 'package:ansicolor/ansicolor.dart';
 import 'package:blockframe_daemon/controller/settings.dart';
@@ -26,7 +27,7 @@ class Bitfinex {
         r'$project': {
 
           'luts': 1,
-          'diff': { r'$abs': { r'$subtract': [newer * 1000, r'$luts']}},
+          'diff': { r'$abs': { r'$subtract': [newer, r'$luts']}},
 
           'candle.mts': 1,
           'candle.open': 1,
@@ -41,7 +42,7 @@ class Bitfinex {
       { r'$sort': { 'diff': 1}},
 
       /* Get all entries between the last block and and previous one (last and penultimate) */
-      { r'$match': { 'luts': { r'$gte': older * 1000, r'$lte': newer * 1000}}},
+      { r'$match': { 'luts': { r'$gte': older, r'$lte': newer}}},
 
       { r'$sort': { 'luts': -1}}
 

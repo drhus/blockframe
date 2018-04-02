@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:blockframe_daemon/controller/database/dao/dao.dart' as dao;
 import 'package:blockframe_daemon/model/custom_candle.dart';
@@ -25,12 +26,11 @@ class Database {
 
   Future<CustomCandle> fetchCandleFromBlock(Map block) async {
 
-    int older = await blockchain.findLastest(block);
+    int older = await blockchain.findLastestTimestamp();
     int newer = block['time'];
 
     // Block time is in seconds, we need to convert it to microseconds before fetching data
-
-    List<CustomCandle> candles = await bitfinex.fetchCandles(older,newer);
+    List<CustomCandle> candles = await bitfinex.fetchCandles(older * pow(10,6),newer * pow(10,6));
 
     return CustomCandle.adjustValues(candles);
 

@@ -16,9 +16,11 @@ class Blockchain {
 
   }
 
-  Future<int> findLastest(Map block) async {
+  Future<int> findLastestTimestamp() async {
 
-    var timestamp = (
+    //TODO Create a unit test that fetches a specific block from blockchain through REST endpoint
+
+    List data = (
 
         await blocksCollection
 
@@ -31,9 +33,9 @@ class Blockchain {
 
             ).toList()
 
-    ).first['time'];
+    );
 
-    return timestamp;
+    return data.isNotEmpty ? data.first['time'] : 0;
 
   }
 

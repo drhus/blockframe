@@ -49,7 +49,6 @@ class Loader {
 
       try {
 
-        bitfinexChannel.resetTimeOutToReconnect();
         await Database.instance.bitfinex.saveCandles(data);
 
       }
@@ -80,8 +79,6 @@ class Loader {
     });
 
     blockChainChannel.onNewBlock.listen((Map block) async {
-
-      blockChainChannel.resetTimeOutToReconnect();
 
       try {
 
