@@ -122,6 +122,9 @@ class Loader {
     sleep(Channel.timeout);
     await _connect();
 
+    _listenToBitfinexEvents();
+    _listenToBlockChainInfoEvents();
+
   }
 
 }

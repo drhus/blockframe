@@ -30,8 +30,7 @@ class Settings {
 
       if (logRecord.level > Level.FINE) {
 
-        print(formatContent(logRecord));
-        sink.writeln(formatContent(logRecord));
+        if (! logRecord.message.contains('Mongo')) sink.writeln(formatContent(logRecord));
 
       }
 
