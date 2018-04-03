@@ -26,11 +26,11 @@ class Database {
 
   Future<CustomCandle> fetchCandleFromBlock(Map block) async {
 
-    int older = await blockchain.findLastestTimestamp();
-    int newer = block['time'];
-
     // Block time is in seconds, we need to convert it to µ seconds before fetching data
-    List<CustomCandle> candles = await bitfinex.fetchCandles(older * pow(10,6),newer * pow(10,6));
+    int older = await blockchain.findLastestTimestamp() * pow(10,6);
+    int newer = block['time'] * pow(10,6);
+
+    List<CustomCandle> candles = await bitfinex.fetchCandles(older,newer);
 
     return CustomCandle.adjustValues(candles);
 
