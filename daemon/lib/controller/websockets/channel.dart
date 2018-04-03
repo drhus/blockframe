@@ -84,11 +84,11 @@ abstract class Channel {
 
   void openDefaultStreams() {
 
-    onConnectController = new StreamController.broadcast();
-    onDisconnectController = new StreamController.broadcast();
-    onStallController = new StreamController.broadcast();
-    onHeartBeatController = new StreamController.broadcast();
-    onPongController = new StreamController.broadcast();
+    onConnectController = new StreamController();
+    onDisconnectController = new StreamController();
+    onStallController = new StreamController();
+    onHeartBeatController = new StreamController();
+    onPongController = new StreamController();
 
     addListeners();
 

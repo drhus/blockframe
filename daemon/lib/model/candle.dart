@@ -22,4 +22,11 @@ class Candle {
 
   Map get asMap => { 'mts' : mts, 'open' : open, 'close' : close, 'high' : high, 'low' : low, 'volume' : volume };
 
+  @override
+  String toString() {
+
+    return 'Candle{mts: $mts, open: $open, close: $close, high: $high, low: $low, volume: $volume}';
+
+  }
+
 }

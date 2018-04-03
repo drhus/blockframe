@@ -29,7 +29,7 @@ class Database {
     int older = await blockchain.findLastestTimestamp();
     int newer = block['time'];
 
-    // Block time is in seconds, we need to convert it to microseconds before fetching data
+    // Block time is in seconds, we need to convert it to µ seconds before fetching data
     List<CustomCandle> candles = await bitfinex.fetchCandles(older * pow(10,6),newer * pow(10,6));
 
     return CustomCandle.adjustValues(candles);

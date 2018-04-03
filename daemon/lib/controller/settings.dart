@@ -30,25 +30,18 @@ class Settings {
 
       if (logRecord.level > Level.FINE) {
 
-        if (! logRecord.message.contains('Mongo')) {
-
-          stdout.writeln(formatContent(logRecord));
-          sink.writeln(formatContent(logRecord));
-
-        }
-
-      }
-
-      if (logRecord.level == Level.SEVERE) {
-
-        stderr.writeln(formatContent(logRecord));
         sink.writeln(formatContent(logRecord));
+        print(formatContent(logRecord));
 
       }
 
       else {
 
-        sink.writeln(formatContent(logRecord));
+        if (! (logRecord.message.contains('Mongo') || (logRecord.message.contains('_sendBuffer')))) {
+
+          sink.writeln(formatContent(logRecord));
+
+        }
 
       }
 

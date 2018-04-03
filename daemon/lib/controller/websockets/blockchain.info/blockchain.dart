@@ -25,7 +25,7 @@ class BlockChainChannel extends Channel {
   Future connect() async {
 
     openDefaultStreams();
-    _onNewBlockController = new StreamController.broadcast();
+    _onNewBlockController = new StreamController();
 
     webSocket = await WebSocket.connect(url);
 

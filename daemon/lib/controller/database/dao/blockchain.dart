@@ -18,8 +18,6 @@ class Blockchain {
 
   Future<int> findLastestTimestamp() async {
 
-    //TODO Create a unit test that fetches a specific block from blockchain through REST endpoint
-
     List data = (
 
         await blocksCollection
@@ -44,10 +42,6 @@ class Blockchain {
     AnsiPen green = new AnsiPen()..green(bold: true);
     AnsiPen blue = new AnsiPen()..cyan(bold: true);
     AnsiPen red = new AnsiPen()..red(bold: true);
-
-    /*int differenceInSeconds = new DateTime.fromMillisecondsSinceEpoch(block['time'] * 1000).difference(new DateTime.fromMillisecondsSinceEpoch(block['candles']['mts'] * 1000)).inSeconds; */
-
-    /*Settings.instance.logger.log(Level.INFO,'Saving block ${bluePen(block['height'] as String)}, timestamp: ${redPen(block['time'] as String)} (${differenceInSeconds as String}) seconds of difference'); */
 
     var height = block['height'];
     var time = block['time'];

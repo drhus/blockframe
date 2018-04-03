@@ -58,4 +58,11 @@ class CustomCandle extends Candle {
   int get hashCode => identityHashCode(this);
   int get candleHashCode => hashObjects([mts,open,close,high,low,volume]);
 
+  @override
+  String toString() {
+
+    return 'CustomCandle{luts: $luts, ${super.toString()}';
+
+  }
+
 }

@@ -18,7 +18,7 @@ class Bitfinex {
 
   }
 
-  /// [older] and [newer] should be in µ seconds
+  /// For correct operation [older] and [newer] should be in µ seconds
   Future<List<CustomCandle>> fetchCandles(int older, int newer) async {
 
     List<Map> pipeline = [

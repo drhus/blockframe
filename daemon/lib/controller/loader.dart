@@ -45,11 +45,25 @@ class Loader {
 
   void _listenToBitfinexEvents() {
 
-    bitfinexChannel.onCandles.listen((List data) async {
+    bitfinexChannel.onCandles.listen((candles) async {
 
       try {
 
-        await Database.instance.bitfinex.saveCandles(data);
+        if (candles.length == 6) {
+
+          await Database.instance.bitfinex.saveCandles(candles);
+
+        }
+
+        else {
+
+          candles.forEach((candle) async {
+
+            await Database.instance.bitfinex.saveCandles(candle);
+
+          });
+
+        }
 
       }
 
