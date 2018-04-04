@@ -27,14 +27,19 @@
 1. blockFrame - Alpha // Current 
  - [x]  basic implementation of blockFrame concept on bitcoin using public API for both block hight and price
  - [x]  Connect Highcharts Interactive JavaScript Candlesticks charts 
- - [x]  . 
+ - [ ]  Matching 
 
 2. blockFrame V02
+ - 
  - [ ]  High-quality instant price information of current Bitcoin rate from bitcoinaverage or others
  - [ ]  store locally historical price data of BTC with smallest incremental time-frame possible (ideally tick data) for last years
  - [ ]  redundant matching mechanism to calculate between the time-stamps of two blocks the Open, highest high, lowest low, and close and calculate the volume
  - [ ]  test alternative charting libraries (ex. Chart.js, Highcharts, C3, NVD3, Plotly.js, Chartist, Victory or Tradingview)
-
+ - [ ]  Matching Mechanism: re-define the matching mechanism as 3 tables structure
+    - A. block heights & time-stamp
+    - B. OHLCV & time-stamp
+    - C. block heights & OHLCV 
+    Both A. & B. built from API, matching mechanism is to generate C. (new block would triger new entry on C.)
 
 3. blockFrame V03
  - [ ]  block height to be obtained locally (full node) instead of current blockchain.info API
