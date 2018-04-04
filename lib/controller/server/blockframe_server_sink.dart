@@ -48,7 +48,7 @@ class BlockframeServerSink extends RequestSink {
     router
 
         .route("/*")
-        .pipe(new HTTPFileController("/home/daniel/developer/blockframe/daemon/resources/website"));
+        .pipe(new HTTPFileController("/home/daniel/developer/blockframe/resources/website"));
 
   }
 
