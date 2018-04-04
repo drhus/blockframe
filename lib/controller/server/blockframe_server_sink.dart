@@ -1,4 +1,4 @@
-import 'package:blockframe_server/controller/database.dart';
+import 'package:blockframe_daemon/controller/database/database.dart';
 
 import 'blockframe_server.dart';
 
@@ -45,6 +45,11 @@ class BlockframeServerSink extends RequestSink {
       .route("/range/[:blocks]")
       .generate(() => new RangeController());
 
+    router
+
+        .route("/*")
+        .pipe(new HTTPFileController("/home/daniel/developer/blockframe/daemon/resources/website"));
+
   }
 
   /// Final initialization method for this instance.
@@ -66,9 +71,9 @@ class BlocksController extends HTTPController {
   @httpGet
   Future<Response> getLastBlocks(@HTTPPath("blocks") int blocks) async {
 
-    if (blocks > 0 && blocks < 200) {
+    if (blocks > 0) {
 
-      List<Map> data = await Database.instance.fetchLastBlocks(blocks: blocks);
+      List<Map> data = await Database.instance.blockchain.fetchLastBlocks(blocks: blocks);
 
       return new Response.ok(data)
 
@@ -92,7 +97,7 @@ class RangeController extends HTTPController {
     int first = int.parse(blocks.first);
     int last = int.parse(blocks.last);
 
-    List<Map> data = await Database.instance.fetchBlocks([first,last]);
+    List<Map> data = await Database.instance.blockchain.fetchAllBlocks([first,last]);
 
     return new Response.ok(data)
 

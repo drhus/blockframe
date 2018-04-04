@@ -1,7 +1,18 @@
-/.idea/
+# Created by .ignore support plugin (hsz.mobi)
+.dart_tool/
+
+.idea/inspectionProfiles/
+.idea/libraries/
+.idea/misc.xml
+.idea/modules.xml
+.idea/workspace.xml
+.idea/vcs.xml
 
 .packages
 
+blockframe-daemon.iml
+blockframe.iml
+
+log/
+
 pubspec.lock
-
-

@@ -32,7 +32,7 @@ class Database {
 
     List<CustomCandle> candles = await bitfinex.fetchCandles(older,newer);
 
-    return CustomCandle.adjustValues(candles);
+    return candles.isNotEmpty ? CustomCandle.adjustValues(candles) : null;
 
   }
 

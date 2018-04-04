@@ -1,5 +1,5 @@
-import 'dart:core';
 import 'dart:async';
+import 'dart:core';
 import 'dart:io';
 
 import 'package:blockframe_daemon/controller/database/database.dart';
@@ -97,9 +97,10 @@ class Loader {
       try {
 
         CustomCandle candle = await Database.instance.fetchCandleFromBlock(block);
-        block['candle'] = candle.asMap;
 
-        await Database.instance.blockchain.saveBlock(block);
+        block['candle'] = candle?.asMap;
+
+        await Database.instance.blockchain.save(block);
 
       }
 

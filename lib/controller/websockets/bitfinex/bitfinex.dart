@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:blockframe_daemon/controller/database/database.dart';
 import 'package:blockframe_daemon/controller/settings.dart';
 import 'package:blockframe_daemon/controller/websockets/channel.dart';
 import 'package:mongo_dart/mongo_dart.dart';

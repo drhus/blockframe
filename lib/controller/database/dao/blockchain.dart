@@ -26,7 +26,7 @@ class Blockchain {
 
               where
 
-                  .sortBy('time',descending: true)
+                  .sortBy('height',descending: true)
                   .limit(1)
 
             ).toList()
@@ -37,18 +37,41 @@ class Blockchain {
 
   }
 
-  Future saveBlock(Map block) async {
+  Future<List<Map>> fetchAllBlocks(List<int> blocks) async {
 
-    AnsiPen green = new AnsiPen()..green(bold: true);
+    List<Map<dynamic,dynamic>> list = await blocksCollection
+
+        .find(where
+
+        .gte('height', blocks.first)
+        .lte('height', blocks.last)
+
+    ).toList();
+
+    list.sort((Map a,Map b) => (a['height'] as int).compareTo(b['height'] as int));
+
+    return list;
+
+  }
+
+  Future<List<Map>> fetchLastBlocks({blocks: int}) async {
+
+    List<Map<dynamic,dynamic>> list = await blocksCollection.find(where.sortBy('height',descending: true).limit(blocks)).toList();
+
+    return list;
+
+  }
+
+  Future save(Map block) async {
+
+    //AnsiPen green = new AnsiPen()..green(bold: true);
     AnsiPen blue = new AnsiPen()..cyan(bold: true);
     AnsiPen red = new AnsiPen()..red(bold: true);
 
     var height = block['height'];
     var time = block['time'];
-    var candle = block['candle'];
 
     Settings.instance.logger.log(Level.INFO,'Saving block ${blue(height.toString())}, timestamp: ${red(time.toString())}');
-    Settings.instance.logger.log(Level.INFO,'Candle data: ${green(candle.toString())}');
 
     await blocksCollection.save(block);
 
