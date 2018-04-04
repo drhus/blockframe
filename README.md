@@ -27,7 +27,6 @@
 1. blockFrame - Alpha // Current 
  - [x]  basic implementation of blockFrame concept on bitcoin using public API for both block hight and price
  - [x]  Connect Highcharts Interactive JavaScript Candlesticks charts 
- - [ ]  Matching 
 
 2. blockFrame V02
  - 
