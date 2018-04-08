@@ -9,6 +9,8 @@
 [blockFrame Original Paper](https://ssrn.com/abstract=3064115 )
 
 # Chart 
+[Open Chart in separate window](http://data.blockframe.xyz/)
+
  <div id="blockFrame-container" style="height: 50vh; width: 50vw;"></div>
 
 
