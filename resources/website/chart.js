@@ -1,8 +1,29 @@
 var datapoints;
 
+function getBlockParameter() {
+
+    var url = window.location.href;
+    var blocks;
+
+    if (url.indexOf('block') != -1) {
+
+        blocks = url.substr(url.indexOf('blocks=') + 'blocks='.length, url.length);
+
+    }
+
+    else {
+
+        blocks = 100;
+
+    }
+
+    return blocks;
+
+}
+
 window.onload = function () {
 
-    $.getJSON('http://data.blockframe.xyz:8000/last/100', function (data) {
+    $.getJSON('http://data.blockframe.xyz:8000/last/' + getBlockParameter(), function (data) {
 
         datapoints = data.map(function(element)  {
 
