@@ -45,10 +45,15 @@ class BlockframeServerSink extends RequestSink {
       .route("/range/[:blocks]")
       .generate(() => new RangeController());
 
-    router
+    /*router
 
         .route("/*")
-        .pipe(new HTTPFileController("/home/daniel/developer/blockframe/resources/website"));
+        .pipe(new HTTPFileController("/home/daniel/developer/blockframe/resources/website")); */*/
+
+    router
+
+      .route("/csv")
+      .generate(() => new CSVController());
 
   }
 
@@ -86,6 +91,35 @@ class BlocksController extends HTTPController {
   }
 
 }
+
+class CSVController extends HTTPController {
+
+  @httpGet
+  Future<Response> getAllBlocksAsCSV() async {
+
+    StringBuffer csv = new StringBuffer();
+
+    List<Map> data = await Database.instance.blockchain.fetchLastBlocks();
+
+      csv.writeln('block Height,milisecond timestamp, open, high, low, close');
+
+      data.forEach((Map block) {
+
+        Map candle = block['candle']['candle'];
+
+        //TODO Should we save local unix micro timestamp when adding candle values to the block document?
+        csv.writeln("${block['height']},${candle['mts']},${candle['open']},${candle['high']},${candle['low']},${candle['close']}");
+
+      });
+
+      return new Response.ok(csv.toString())
+
+        ..contentType = new ContentType("text", "csv", charset: "utf-8");
+
+    }
+
+}
+
 
 class RangeController extends HTTPController {
 

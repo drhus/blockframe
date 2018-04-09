@@ -28,20 +28,20 @@ window.onload = function () {
 
         var chart = new CanvasJS.Chart("chartContainer",
             {
-                title: {
+                /*title: {
                     text: "Price X Blockframe Height "
-                },
+                },*/
                 zoomEnabled: true,
                 axisY: {
                     includeZero: false,
-                    title: "Prices",
+                    //title: "Prices",
                     prefix: "$ "
                 },
                 axisX: {
                     interval: 2,
                     intervalType: "number",
                     //valueFormatString: "MMM-YY",
-                    title: "Block Height",
+                    //title: "Block Height",
                     labelAngle: -45,
                     labelFontSize: 11
                 },
