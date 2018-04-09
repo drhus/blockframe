@@ -37,41 +37,43 @@ class Blockchain {
 
   }
 
-  Future<List<Map>> fetchAllBlocks(List<int> blocks) async {
+  Future <List<Map>> fetchBlocks(int first, int last, { int limit }) async {
 
-    List<Map<dynamic,dynamic>> list = await blocksCollection
+    SelectorBuilder selectorBuilder =
 
-        .find(where
+    where
 
-        .gte('height', blocks.first)
-        .lte('height', blocks.last)
+        .gte('height', first)
+        .lte('height', last)
+        .sortBy('height', descending: true);
 
-    ).toList();
+    return await blocksCollection.find(selectorBuilder.limit(limit ?? 0)).toList();
 
-    list.sort((Map a,Map b) => (a['height'] as int).compareTo(b['height'] as int));
-
-    return list;
 
   }
 
-  Future<List<Map>> fetchLastBlocks({blocks: int}) async {
+  Future<List<Map>> fetchLastBlocks({int limit}) async {
 
-    List<Map<dynamic,dynamic>> list = await blocksCollection.find(where.sortBy('height',descending: true).limit(blocks)).toList();
+    SelectorBuilder selectorBuilder =
 
-    return list;
+        where
+
+            .sortBy('height', descending: true);
+
+    return await blocksCollection.find(selectorBuilder.limit(limit ?? 0)).toList();
 
   }
 
   Future save(Map block) async {
 
-    //AnsiPen green = new AnsiPen()..green(bold: true);
+    AnsiPen green = new AnsiPen()..green(bold: true);
     AnsiPen blue = new AnsiPen()..cyan(bold: true);
     AnsiPen red = new AnsiPen()..red(bold: true);
 
     var height = block['height'];
     var time = block['time'];
 
-    Settings.instance.logger.log(Level.INFO,'Saving block ${blue(height.toString())}, timestamp: ${red(time.toString())}');
+    Settings.instance.logger.log(Level.INFO,'Saving block ${blue(height.toString())}. Candle: ${green(block['candle'].toString())}');
 
     await blocksCollection.save(block);
 

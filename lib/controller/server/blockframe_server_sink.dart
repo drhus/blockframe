@@ -73,7 +73,7 @@ class BlocksController extends HTTPController {
 
     if (blocks > 0) {
 
-      List<Map> data = await Database.instance.blockchain.fetchLastBlocks(blocks: blocks);
+      List<Map> data = await Database.instance.blockchain.fetchLastBlocks(limit: blocks);
 
       return new Response.ok(data)
 
@@ -97,7 +97,7 @@ class RangeController extends HTTPController {
     int first = int.parse(blocks.first);
     int last = int.parse(blocks.last);
 
-    List<Map> data = await Database.instance.blockchain.fetchAllBlocks([first,last]);
+    List<Map> data = await Database.instance.blockchain.fetchBlocks(first,last);
 
     return new Response.ok(data)
 

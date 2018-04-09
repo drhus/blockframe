@@ -16,7 +16,7 @@ Future<Map> fetchBlock() async {
   HttpClientRequest request = await client.getUrl(Uri.parse('https://blockchain.info/pt/block-height/$height?format=json'));
   HttpClientResponse response = await request.close();
 
-  Map block = json.decode(await response.transform(utf8.decoder).join());
+  Map block = JSON.decode(await response.transform(UTF8.decoder).join());
 
   return block['blocks'].first;
 

@@ -14,7 +14,7 @@ class Loader {
   BlockChainChannel blockChainChannel = new BlockChainChannel();
   BitfinexChannel bitfinexChannel = new BitfinexChannel();
 
-  void start() async {
+  Future start() async {
 
     await Database.instance.open();
 
@@ -129,7 +129,7 @@ class Loader {
 
   }
 
-  void _reconnect(events) async {
+  Future _reconnect(events) async {
 
     Settings.instance.logger.log(Level.WARNING, events);
 

@@ -42,7 +42,7 @@ class BitfinexChannel extends Channel {
 
         webSocket.listen((event) {
 
-          var response = json.decode(event);
+          var response = JSON.decode(event);
           Settings.instance.logger.log(Level.FINE,'Raw data received from websocket: $response');
 
           _handleResponse(response);
