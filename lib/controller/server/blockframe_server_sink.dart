@@ -101,7 +101,7 @@ class CSVController extends HTTPController {
 
     List<Map> data = await Database.instance.blockchain.fetchLastBlocks();
 
-      csv.writeln('block Height,milisecond timestamp,voulme,open,high,low,close');
+      csv.writeln('block Height,milisecond timestamp,volume,open,high,low,close');
 
       data.forEach((Map block) {
 
@@ -114,7 +114,8 @@ class CSVController extends HTTPController {
 
       return new Response.ok(csv.toString())
 
-        ..contentType = new ContentType("text", "csv", charset: "utf-8");
+        ..contentType = new ContentType("text", "csv", charset: "utf-8")
+        ..headers = { 'Content-Disposition' : 'attachment; filename=blockframe.csv' };
 
     }
 
