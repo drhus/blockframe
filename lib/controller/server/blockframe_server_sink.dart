@@ -101,14 +101,14 @@ class CSVController extends HTTPController {
 
     List<Map> data = await Database.instance.blockchain.fetchLastBlocks();
 
-      csv.writeln('block Height,milisecond timestamp, open, high, low, close, volume');
+      csv.writeln('block Height,milisecond timestamp,voulme,open,high,low,close');
 
       data.forEach((Map block) {
 
         Map candle = block['candle']['candle'];
 
         //TODO Should we save local unix micro timestamp when adding candle values to the block document?
-        csv.writeln("${block['height']},${candle['mts']},${candle['open']},${candle['high']},${candle['low']},${candle['close']},${candle['volume']}");
+        csv.writeln("${block['height']},${candle['mts']},${candle['volume']},${candle['open']},${candle['high']},${candle['low']},${candle['close']}");
 
       });
 
