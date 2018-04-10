@@ -11,7 +11,7 @@
 # Chart 
 [Open Chart in separate window](http://data.blockframe.xyz/)
 
-<iframe src="http://data.blockframe.xyz/?blocks=100" style="height:100%;width:100%;border:none;"></iframe>
+<iframe src="http://data.blockframe.xyz/?blocks=72" style="height:100%;width:330px;border:none;" scrolling="no"></iframe>
 
 
 
