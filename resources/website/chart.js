@@ -5,7 +5,7 @@ function getBlockParameter() {
     var url = window.location.href;
     var blocks;
 
-    if (url.indexOf('block') != -1) {
+    if (url.indexOf('blocks') != -1) {
 
         blocks = url.substr(url.indexOf('blocks=') + 'blocks='.length, url.length);
 
