@@ -11,10 +11,8 @@
 # Chart 
 [Open Chart in separate window](http://data.blockframe.xyz/)
 
-<iframe src="http://data.blockframe.xyz/?blocks=100"></iframe>
- <!-- 
-<div id="blockFrame-container" style="height: 50vh; width: 50vw;"></div>
--->
+<iframe src="http://data.blockframe.xyz/?blocks=100" style="height:100%;width:100%;border:none;"></iframe>
+
 
 
 # Why
