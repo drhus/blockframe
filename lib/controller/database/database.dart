@@ -24,15 +24,37 @@ class Database {
 
   }
 
-  Future<CustomCandle> fetchCandleFromBlock(Map block) async {
+  /// Weighted candle
+  Future<CustomCandle> fetchCandleFromBlockHeight(int height) async {
 
-    // Block time is in seconds, we need to convert it to µ seconds before fetching data
-    int older = await blockchain.findLastestTimestamp() * pow(10,6);
-    int newer = block['time'] * pow(10,6);
-
-    List<CustomCandle> candles = await bitfinex.fetchCandles(older,newer);
+    List<CustomCandle> candles = await fetchCandlesByBlockHeight(height);
 
     return candles.isNotEmpty ? CustomCandle.adjustValues(candles) : null;
+
+  }
+
+  Future<List<CustomCandle>> fetchCandlesByBlockHeight(int height) async {
+
+    int newer;
+    int older;
+
+    int next = await blockchain.next(height);
+
+    if (next != -1) {
+
+      newer = (await blockchain.fetchBlock(next))['time'] * pow(10,6);
+
+    }
+
+    else {
+
+      newer = (await blockchain.findLastestTimestamp() * pow(10,6));
+
+    }
+
+    older = (await Database.instance.blockchain.fetchBlock(height))['time'] * pow(10,6);
+
+    return await bitfinex.fetchCandles(older, newer);
 
   }
 

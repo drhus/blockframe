@@ -37,8 +37,15 @@ class Blockchain {
 
   }
 
-  Future<bool> exists(int height) async =>
-    (await blocksCollection.count(where.eq('height', height))) == 1;
+  Future<int> next(int height) async {
+
+    Stream query = (await blocksCollection.find(where.gte('height', height).limit(2)));
+
+    int next = (await query.toList()).last['height'] ?? -1;
+
+    return next;
+
+  }
 
   Future<Map> fetchBlock(int height) async {
 

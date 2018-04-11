@@ -130,7 +130,7 @@ class CSVCandlesByBlockFrame extends HTTPController {
 
     StringBuffer csv = new StringBuffer();
 
-    List<CustomCandle> candles = await Database.instance.bitfinex.fetchCandlesByBlockHeight(height);
+    List<CustomCandle> candles = await Database.instance.fetchCandlesByBlockHeight(height);
 
     csv.writeln(header);
 

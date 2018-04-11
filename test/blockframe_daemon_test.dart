@@ -56,7 +56,7 @@ Future main() async {
 
       Map<String,num> data = {'volume': 147.81158993000005,	'open': 6749.60, 'high' : 6759.50, 'low' : 6749.60, 'close' :	6755.00 };
 
-      List<CustomCandle> candles = await Database.instance.bitfinex.fetchCandlesByBlockHeight(516840);
+      List<CustomCandle> candles = await Database.instance.fetchCandlesByBlockHeight(516840);
 
       CustomCandle adjusted = CustomCandle.adjustValues(candles);
 
