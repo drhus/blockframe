@@ -9,7 +9,7 @@
 [blockFrame Original Paper](https://ssrn.com/abstract=3064115 )
 
 # Chart 
-[Open Chart in separate window](http://data.blockframe.xyz/)
+[Open Chart in separate window](http://data.blockframe.xyz/?blocks=504)
 
 <iframe src="http://data.blockframe.xyz/?blocks=72" style="height:330px;width:100%;border:none;" scrolling="no"></iframe>
 
