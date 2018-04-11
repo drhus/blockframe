@@ -1,6 +1,8 @@
+import 'package:blockframe_daemon/controller/database/dao/blockchain.dart';
 import 'package:blockframe_daemon/controller/database/database.dart';
 
 import 'blockframe_server.dart';
+import 'package:blockframe_daemon/model/custom_candle.dart';
 
 /// This class handles setting up this application.
 ///
@@ -35,25 +37,16 @@ class BlockframeServerSink extends RequestSink {
   void setupRouter(Router router) {
     // Prefer to use `pipe` and `generate` instead of `listen`.
     // See: https://aqueduct.io/docs/http/request_controller/
-    router
-    
-        .route("/last/[:blocks]")
-        .generate(() => new BlocksController());
-    
-    router
-    
-      .route("/range/[:blocks]")
-      .generate(() => new RangeController());
+
+    router.route("/last/[:blocks]").generate(() => new BlocksController());
+    router.route("/range/[:blocks]").generate(() => new RangeController());
+    router.route("/csv/blockframes").generate(() => new CSVBlockframes());
+    router.route("/csv/candles/[:height]").generate(() => new CSVCandlesByBlockFrame());
 
     /*router
 
         .route("/*")
         .pipe(new HTTPFileController("/home/daniel/developer/blockframe/resources/website")); */*/
-
-    router
-
-      .route("/csv")
-      .generate(() => new CSVController());
 
   }
 
@@ -92,35 +85,69 @@ class BlocksController extends HTTPController {
 
 }
 
-class CSVController extends HTTPController {
+class CSVBlockframes extends HTTPController {
+
+  final String header = 'block height,microsecond timestamp,milisecond timestamp,volume,open,high,low,close';
 
   @httpGet
-  Future<Response> getAllBlocksAsCSV() async {
+  Future<Response> getBlocks(@HTTPPath("height") int height) async {
+
+    Blockchain blockchain = Database.instance.blockchain;
+    List<Map> blocks = [];
 
     StringBuffer csv = new StringBuffer();
 
-    List<Map> data = await Database.instance.blockchain.fetchLastBlocks();
+    height == null
 
-      csv.writeln('block Height,milisecond timestamp,volume,open,high,low,close');
+        ? blocks = await blockchain.fetchLastBlocks()
+        : blocks.add(await blockchain.fetchBlock(height));
 
-      data.forEach((Map block) {
+    // Header
+    csv.writeln(header);
 
-        Map candle = block['candle']['candle'];
+      blocks.forEach((Map block) {
 
-        //TODO Should we save local unix micro timestamp when adding candle values to the block document?
-        csv.writeln("${block['height']},${candle['mts']},${candle['volume']},${candle['open']},${candle['high']},${candle['low']},${candle['close']}");
+        CustomCandle candle = new CustomCandle.fromList(block['candle']['candle']);
+        csv.writeln("${block['height']},${candle.luts},${candle.mts},${candle.volume},${candle.open},${candle.high},${candle.low},${candle.close}");
 
       });
 
       return new Response.ok(csv.toString())
 
         ..contentType = new ContentType("text", "csv", charset: "utf-8")
-        ..headers = { 'Content-Disposition' : 'attachment; filename=blockframe.csv' };
+        ..headers = { 'Content-Disposition' : 'attachment; filename=blockframes.csv' };
 
     }
 
 }
 
+class CSVCandlesByBlockFrame extends HTTPController {
+
+  final String header = 'block height,microsecond timestamp,milisecond timestamp,volume,open,high,low,close';
+
+  @httpGet
+  Future<Response> getCandlesByHeight(@HTTPPath("height") int height) async {
+
+    StringBuffer csv = new StringBuffer();
+
+    List<CustomCandle> candles = await Database.instance.bitfinex.fetchCandlesByBlockHeight(height);
+
+    csv.writeln(header);
+
+    candles.forEach((CustomCandle candle) {
+
+      csv.writeln("$height,${candle.luts},${candle.mts},${candle.volume},${candle.open},${candle.high},${candle.low},${candle.close}");
+
+    });
+
+    return new Response.ok(csv.toString())
+
+      ..contentType = new ContentType("text", "csv", charset: "utf-8")
+      ..headers = { 'Content-Disposition' : 'attachment; filename=block-${height}-candles.csv' };
+
+  }
+
+}
 
 class RangeController extends HTTPController {
 

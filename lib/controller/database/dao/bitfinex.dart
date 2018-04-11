@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:core';
 
+import 'dart:math';
 import 'package:ansicolor/ansicolor.dart';
+import 'package:blockframe_daemon/controller/database/dao/blockchain.dart';
+import 'package:blockframe_daemon/controller/database/database.dart';
 import 'package:blockframe_daemon/controller/settings.dart';
 import 'package:blockframe_daemon/model/custom_candle.dart';
 import 'package:logging/logging.dart';
@@ -17,12 +20,38 @@ class Bitfinex {
 
   }
 
+  Future<List<CustomCandle>> fetchCandlesByBlockHeight(int height) async {
+
+    Blockchain blockchain = Database.instance.blockchain;
+
+    int newer;
+    int older;
+
+    if (await blockchain.exists(height + 1)) {
+
+      newer = (await blockchain.fetchBlock(height + 1))['time'] * pow(10,6);
+
+    }
+
+    else {
+
+      newer = (await blockchain.findLastestTimestamp() * pow(10,6));
+
+    }
+
+    older = (await Database.instance.blockchain.fetchBlock(height))['time'] * pow(10,6);
+
+    return await fetchCandles(older, newer);
+
+  }
+
   /// For correct operation [older] and [newer] should be in µ seconds
   Future<List<CustomCandle>> fetchCandles(int older, int newer) async {
 
     List<Map> pipeline = [
 
       {
+
         r'$project': {
 
           'luts': 1,
@@ -42,10 +71,8 @@ class Bitfinex {
 
       /* Get all entries between the last block and and previous one (last and penultimate) */
       //TODO Check if $lte is really necessary
-      // { r'$match': { 'luts': { r'$gte': older, r'$lte': newer}}},
-      { r'$match': { 'luts': { r'$gte': older}}},
-
-      { r'$sort': { 'luts': -1}}
+      { r'$match': { 'luts': { r'$gte': older, r'$lte': newer}}},
+      { r'$sort': { 'luts': 1}}
 
     ];
 

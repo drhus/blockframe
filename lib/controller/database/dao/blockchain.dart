@@ -37,6 +37,22 @@ class Blockchain {
 
   }
 
+  Future<bool> exists(int height) async =>
+    (await blocksCollection.count(where.eq('height', height))) == 1;
+
+  Future<Map> fetchBlock(int height) async {
+
+    SelectorBuilder selectorBuilder =
+
+    where
+
+        .eq('height', height)
+        .sortBy('height', descending: true);
+
+    return (await blocksCollection.find(selectorBuilder.limit(1)).toList()).first;
+
+  }
+
   Future <List<Map>> fetchBlocks(int first, int last, { int limit }) async {
 
     SelectorBuilder selectorBuilder =
