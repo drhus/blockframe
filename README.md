@@ -59,7 +59,7 @@
  * Fork [blockFrame](https://github.com/drhus/blockframe) Github repository: Fix a bug or implement a new feature.
  * Report [issues](https://github.com/drhus/blockframe/issues) and/or make suggestions
  * Donate: to developmnet fund to accelerate the efforts so a **reasonably usable version** became soon available :) 
-   * BTC: 13TiMKr4WaSg26hj3bEyzL3JCEURGcgJvi [QR](https://chart.googleapis.com/chart?cht=qr&chs=500x500&choe=UTF-8&chld=H&chl=13TiMKr4WaSg26hj3bEyzL3JCEURGcgJvi)
+   * BTC: `13TiMKr4WaSg26hj3bEyzL3JCEURGcgJvi` [QR](https://chart.googleapis.com/chart?cht=qr&chs=500x500&choe=UTF-8&chld=H&chl=13TiMKr4WaSg26hj3bEyzL3JCEURGcgJvi)
    * ETH: 
   
   
