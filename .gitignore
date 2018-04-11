@@ -16,3 +16,4 @@ blockframe.iml
 log/
 
 pubspec.lock
+/.pub/
