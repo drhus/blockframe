@@ -25,9 +25,9 @@ class Database {
   }
 
   /// Weighted candle
-  Future<CustomCandle> fetchCandleFromBlockHeight(int height) async {
+  Future<CustomCandle> fetchCandleFromBlock(Map block) async {
 
-    List<CustomCandle> candles = await fetchCandlesByBlockHeight(height);
+    List<CustomCandle> candles = await fetchCandlesByBlockHeight(block['height']);
 
     return candles.isNotEmpty ? CustomCandle.adjustValues(candles) : null;
 
@@ -38,15 +38,17 @@ class Database {
     int newer;
     int older;
 
-    int next = await blockchain.next(height);
+    bool exists = await blockchain.exists(height);
+    bool hasNext = await blockchain.hasNext(height);
 
-    if (next != -1) {
+    if (exists && hasNext) {
 
+      int next = await blockchain.next(height);
       newer = (await blockchain.fetchBlock(next))['time'] * pow(10,6);
 
     }
 
-    else {
+    else if (exists && ! hasNext ){
 
       newer = (await blockchain.findLastestTimestamp() * pow(10,6));
 

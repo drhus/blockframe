@@ -37,13 +37,26 @@ class Blockchain {
 
   }
 
+  Future<bool> hasNext(int height) async {
+
+    List results = (await blocksCollection.find(where.gte('height', height).limit(2)).toList());
+
+    return (results.length == 2);
+
+  }
+
   Future<int> next(int height) async {
 
-    Stream query = (await blocksCollection.find(where.gte('height', height).limit(2)));
+    List results = (await blocksCollection
 
-    int next = (await query.toList()).last['height'] ?? -1;
+        .find(where.gte('height', height)
+        .sortBy('height',descending: false)
+        .limit(2))
+        .toList()
 
-    return next;
+    );
+
+    return await results.last['height'];
 
   }
 
@@ -99,6 +112,14 @@ class Blockchain {
     Settings.instance.logger.log(Level.INFO,'Saving block ${blue(height.toString())}. Candle: ${green(block['candle'].toString())}');
 
     await blocksCollection.save(block);
+
+  }
+
+  Future<bool> exists(int height) async {
+
+    int results = await blocksCollection.count(where.eq('height', height));
+
+    return results == 1;
 
   }
 
