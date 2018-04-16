@@ -88,6 +88,12 @@ class Blockchain {
 
   }
 
+  Future<Map> fetchLatestBlock() async {
+
+    return (await fetchLastBlocks(limit: 1)).toList().first;
+
+  }
+
   Future<List<Map>> fetchLastBlocks({int limit}) async {
 
     SelectorBuilder selectorBuilder =

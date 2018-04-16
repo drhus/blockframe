@@ -96,7 +96,7 @@ class Loader {
 
       try {
 
-        CustomCandle candle = await Database.instance.fetchCandleFromBlock(block);
+        CustomCandle candle = await Database.instance.fetchCandleFromNewBlock(block);
 
         block['candle'] = candle?.asMap;
 

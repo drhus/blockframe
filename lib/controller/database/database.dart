@@ -36,27 +36,40 @@ class Database {
   Future<List<CustomCandle>> fetchCandlesByBlockHeight(int height) async {
 
     int newer;
-    int older;
 
     bool exists = await blockchain.exists(height);
+    if (! exists) throw new RangeError("Block $height doesn't exists");
+
     bool hasNext = await blockchain.hasNext(height);
 
-    if (exists && hasNext) {
+    Map block = await blockchain.fetchBlock(height);
+    int older = block['time'] * pow(10,6);
+
+    if (hasNext) {
 
       int next = await blockchain.next(height);
       newer = (await blockchain.fetchBlock(next))['time'] * pow(10,6);
 
     }
 
-    else if (exists && ! hasNext ){
+    else {
 
       newer = (await blockchain.findLastestTimestamp() * pow(10,6));
 
     }
 
-    older = (await Database.instance.blockchain.fetchBlock(height))['time'] * pow(10,6);
-
     return await bitfinex.fetchCandles(older, newer);
+
+  }
+
+  Future<CustomCandle> fetchCandleFromNewBlock(Map block) async {
+
+    int newer = block['time'] * pow(10,6);
+    int older = (await blockchain.fetchLatestBlock())['time'] * pow(10,6);
+
+    List candles = await bitfinex.fetchCandles(older, newer);
+
+    return candles.isNotEmpty ? CustomCandle.adjustValues(candles) : null;
 
   }
 

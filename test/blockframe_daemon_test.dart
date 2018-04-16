@@ -1,18 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
+import 'package:blockframe_daemon/controller/database/dao/dao.dart';
 import 'package:blockframe_daemon/controller/database/database.dart';
 import 'package:blockframe_daemon/model/custom_candle.dart';
 import 'package:test/test.dart';
 
 HttpClient client = new HttpClient();
 
-const int height = 514999;
-Map block = {};
+Blockchain blockchain = Database.instance.blockchain;
+Bitfinex bitfinex = Database.instance.bitfinex;
 
-Future<Map> fetchBlock() async {
+Future<Map> fetchBlockFromURL(int height) async {
 
   HttpClientRequest request = await client.getUrl(Uri.parse('https://blockchain.info/pt/block-height/$height?format=json'));
   HttpClientResponse response = await request.close();
@@ -27,8 +27,6 @@ Future main() async {
 
   await Database.instance.open();
 
-  block = await fetchBlock();
-
   group('blockchain.info',() {
 
     test('find latest timestamp', () async {
@@ -38,16 +36,41 @@ Future main() async {
 
     });
 
+    test('block exists', () async {
+
+      expect(await blockchain.exists(516840),true);
+      expect(await blockchain.exists(616840),false);
+
+    });
+
+    test('has next block', () async {
+
+      expect(await blockchain.hasNext(516840),true);
+      expect(await blockchain.hasNext(616840),false);
+
+    });
+
+    test('next block', () async {
+
+      // Return results sorted descending
+      List<Map> blocks = await blockchain.fetchLastBlocks(limit: 2);
+
+      int next = await blockchain.next(blocks.last['height']);
+
+      expect(next == blocks.first['height'],true);
+
+    });
+
   });
 
   group('Bitfinex',() {
 
     test('fetch candle data', () async {
 
-      int older = await Database.instance.blockchain.findLastestTimestamp();
-      int newer = block['time'];
+      int older = await blockchain.findLastestTimestamp();
+      int newer = (await blockchain.fetchBlock(516840))['time'];
 
-      var candles = await Database.instance.bitfinex.fetchCandles(older * pow(10,6), newer * pow(10,6));
+      var candles = await blockchain.fetchLatestBlock();
       expect(candles.length >= 0,true);
 
     });
