@@ -27,23 +27,35 @@ window.onload = function () {
 
         datapoints = data.map(function(block)  {
 
-            return {
+            var datapoint;
 
-                x: block.height,
+            try {
 
-                y: [
+                datapoint =  {
 
-                    block.price.candle.open,
-                    block.price.candle.high,
-                    block.price.candle.low,
-                    block.price.candle.close
+                    x: block.height,
 
-                ],
+                    y: [
 
-                //label: new Date(element.data.candle.mts).toLocaleDateString().toString() + ' - ' + element.height.toString()
-                label: block.height
+                        block.price.candle.open,
+                        block.price.candle.high,
+                        block.price.candle.low,
+                        block.price.candle.close
 
-            };
+                    ],
+
+                    //label: new Date(element.data.candle.mts).toLocaleDateString().toString() + ' - ' + element.height.toString()
+                    label: block.height
+
+                };
+
+            }
+
+            catch(exception) {
+
+                console.error('Null datapoint for block ' + block.height)
+
+            }
 
         });
 
