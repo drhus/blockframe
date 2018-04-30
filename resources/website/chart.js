@@ -57,6 +57,12 @@ window.onload = function () {
 
             }
 
+            finally {
+
+                return datapoint;
+
+            }
+
         });
 
         var chart = new CanvasJS.Chart("chartContainer",
