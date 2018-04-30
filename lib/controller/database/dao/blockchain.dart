@@ -115,7 +115,7 @@ class Blockchain {
     var height = block['height'];
     var time = block['time'];
 
-    Settings.instance.logger.log(Level.INFO,'Saving block ${blue(height.toString())}. Candle: ${green(block['candle'].toString())}');
+    Settings.instance.logger.log(Level.INFO,'Saving block ${blue(height.toString())}. Candle: ${green(block['price'].toString())}');
 
     await blocksCollection.save(block);
 

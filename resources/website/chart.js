@@ -23,9 +23,9 @@ function getBlockParameter() {
 
 window.onload = function () {
 
-    $.getJSON('http://data.blockframe.xyz:8000/last/' + getBlockParameter(), function (data) {
+    $.getJSON('http://data.blockframe.xyz:8000/last/' + getBlockParameter(), function (price) {
 
-        datapoints = data.map(function(element)  {
+        datapoints = price.map(function(element)  {
 
             return {
 
@@ -33,14 +33,14 @@ window.onload = function () {
 
                 y: [
 
-                    element.candle.candle.open,
-                    element.candle.candle.high,
-                    element.candle.candle.low,
-                    element.candle.candle.close
+                    element.price.candle.open,
+                    element.price.candle.high,
+                    element.price.candle.low,
+                    element.price.candle.close
 
                 ],
 
-                //label: new Date(element.candle.candle.mts).toLocaleDateString().toString() + ' - ' + element.height.toString()
+                //label: new Date(element.data.candle.mts).toLocaleDateString().toString() + ' - ' + element.height.toString()
                 label: element.height
 
             };

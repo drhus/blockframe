@@ -49,6 +49,7 @@ class Loader {
 
       try {
 
+        // Save updates
         if (candles.length == 6) {
 
           await Database.instance.bitfinex.saveCandles(candles);
@@ -57,6 +58,7 @@ class Loader {
 
         else {
 
+          // Save snapshot
           candles.forEach((candle) async {
 
             await Database.instance.bitfinex.saveCandles(candle);
@@ -98,7 +100,7 @@ class Loader {
 
         CustomCandle candle = await Database.instance.fetchCandleFromNewBlock(block);
 
-        block['candle'] = candle?.asMap;
+        block['price'] = candle?.asMap;
 
         await Database.instance.blockchain.save(block);
 
