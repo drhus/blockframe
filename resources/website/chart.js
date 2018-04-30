@@ -23,25 +23,25 @@ function getBlockParameter() {
 
 window.onload = function () {
 
-    $.getJSON('http://data.blockframe.xyz:8000/last/' + getBlockParameter(), function (price) {
+    $.getJSON('http://data.blockframe.xyz:8000/last/' + getBlockParameter(), function (data) {
 
-        datapoints = price.map(function(element)  {
+        datapoints = data.map(function(block)  {
 
             return {
 
-                x: element.height,
+                x: block.height,
 
                 y: [
 
-                    element.price.candle.open,
-                    element.price.candle.high,
-                    element.price.candle.low,
-                    element.price.candle.close
+                    block.price.candle.open,
+                    block.price.candle.high,
+                    block.price.candle.low,
+                    block.price.candle.close
 
                 ],
 
                 //label: new Date(element.data.candle.mts).toLocaleDateString().toString() + ' - ' + element.height.toString()
-                label: element.height
+                label: block.height
 
             };
 
