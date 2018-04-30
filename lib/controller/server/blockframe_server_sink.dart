@@ -107,7 +107,7 @@ class CSVBlockframes extends HTTPController {
 
       blocks.forEach((Map block) {
 
-        CustomCandle candle = new CustomCandle.fromList(block['candle']['candle']);
+        CustomCandle candle = new CustomCandle.fromList(block['price']['candle']);
         csv.writeln("${block['height']},${candle.luts},${candle.mts},${candle.volume},${candle.open},${candle.high},${candle.low},${candle.close}");
 
       });

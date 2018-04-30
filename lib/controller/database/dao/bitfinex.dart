@@ -53,18 +53,18 @@ class Bitfinex {
 
     List aggregateResults = (await candlesCollection.aggregateToStream(pipeline,cursorOptions: {}).toList());
 
-    List<CustomCandle> results = aggregateResults.map((dynamic candle) {
+    List<CustomCandle> results = aggregateResults.map((dynamic price) {
 
       return new CustomCandle(
 
-          candle['luts'],
+          price['luts'],
 
-          candle['candle']['mts'],
-          candle['candle']['open'],
-          candle['candle']['close'],
-          candle['candle']['high'],
-          candle['candle']['low'],
-          candle['candle']['volume']);
+          price['candle']['mts'],
+          price['candle']['open'],
+          price['candle']['close'],
+          price['candle']['high'],
+          price['candle']['low'],
+          price['candle']['volume']);
 
     }).toList();
 
