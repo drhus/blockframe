@@ -53,7 +53,7 @@ window.onload = function () {
 
             catch(exception) {
 
-                console.error('Null datapoint for block ' + block.height)
+                throw new Error('Null datapoint for block ' + block.height)
 
             }
 
