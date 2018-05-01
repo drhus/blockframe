@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:ansicolor/ansicolor.dart';
 import 'package:blockframe_daemon/controller/settings.dart';
+import 'package:blockframe_daemon/model/custom_candle.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 class Blockchain {

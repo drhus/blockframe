@@ -20,6 +20,33 @@ class Bitfinex {
 
   }
 
+  /// return time in µ seconds
+  Future<int> fetchClosestCandleTimestamp(int blockTime) async {
+
+    List<Map> pipeline = [
+
+      {
+
+        r'$project': {
+
+          'luts': 1,
+          'diff': { r'$abs': { r'$subtract': [blockTime, r'$luts']}},
+
+        }
+      },
+
+      { r'$sort': { 'diff': 1}},
+      // Get the closest value
+      { r'$limit' : 1 }
+
+    ];
+
+    List aggregateResults = (await candlesCollection.aggregateToStream(pipeline,cursorOptions: {}).toList());
+
+    return aggregateResults.first['luts'];
+
+  }
+
   /// For correct operation [older] and [newer] should be in µ seconds
   Future<List<CustomCandle>> fetchCandles(int older, int newer) async {
 
@@ -45,7 +72,6 @@ class Bitfinex {
       { r'$sort': { 'diff': 1}},
 
       /* Get all entries between the last block and and previous one (last and penultimate) */
-      //TODO Check if $lte is really necessary
       { r'$match': { 'luts': { r'$gte': older, r'$lte': newer}}},
       { r'$sort': { 'luts': 1}}
 
@@ -53,18 +79,18 @@ class Bitfinex {
 
     List aggregateResults = (await candlesCollection.aggregateToStream(pipeline,cursorOptions: {}).toList());
 
-    List<CustomCandle> results = aggregateResults.map((dynamic price) {
+    List<CustomCandle> results = aggregateResults.map((dynamic candle) {
 
       return new CustomCandle(
 
-          price['luts'],
+          candle['luts'],
 
-          price['candle']['mts'],
-          price['candle']['open'],
-          price['candle']['close'],
-          price['candle']['high'],
-          price['candle']['low'],
-          price['candle']['volume']);
+          candle['candle']['mts'],
+          candle['candle']['open'],
+          candle['candle']['close'],
+          candle['candle']['high'],
+          candle['candle']['low'],
+          candle['candle']['volume']);
 
     }).toList();
 

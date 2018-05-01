@@ -64,10 +64,10 @@ class Database {
 
   Future<CustomCandle> fetchCandleFromNewBlock(Map block) async {
 
-    int newer = block['time'] * pow(10,6);
+    int newer = (await bitfinex.fetchClosestCandleTimestamp(block['time']));
     int older = (await blockchain.fetchLatestBlock())['time'] * pow(10,6);
 
-    List candles = await bitfinex.fetchCandles(older, newer);
+    List candles = await bitfinex.fetchCandles(newer,older);
 
     return candles.isNotEmpty ? CustomCandle.adjustValues(candles) : null;
 
