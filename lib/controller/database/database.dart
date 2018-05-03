@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:blockframe_daemon/controller/database/dao/dao.dart' as dao;
+import 'package:blockframe_daemon/controller/settings.dart';
 import 'package:blockframe_daemon/model/custom_candle.dart';
+import 'package:logging/logging.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 class Database {
@@ -64,10 +66,17 @@ class Database {
 
   Future<CustomCandle> fetchCandleFromNewBlock(Map block) async {
 
-    int newer = (await bitfinex.fetchClosestCandleTimestamp(block['time']));
-    int older = (await blockchain.fetchLatestBlock())['time'] * pow(10,6);
+    int older = await blockchain.isEmpty()
 
-    List candles = await bitfinex.fetchCandles(newer,older);
+      ? 0
+      : (await blockchain.fetchLatestBlock())['price']['luts'];
+
+    int newer = (await bitfinex.fetchClosestCandleTimestamp(block['time'] * pow(10,6)));
+
+    Settings.instance.logger.log(Level.FINE,'Previous block timestamp: ${older} µs');
+    Settings.instance.logger.log(Level.FINE,'Current block timestamp: ${newer} µs');
+
+    List candles = await bitfinex.fetchCandles(older,newer);
 
     return candles.isNotEmpty ? CustomCandle.adjustValues(candles) : null;
 

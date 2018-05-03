@@ -20,7 +20,7 @@ class Bitfinex {
 
   }
 
-  /// return time in µ seconds
+  /// [blockTime] is in µ seconds
   Future<int> fetchClosestCandleTimestamp(int blockTime) async {
 
     List<Map> pipeline = [
@@ -43,6 +43,8 @@ class Bitfinex {
 
     List aggregateResults = (await candlesCollection.aggregateToStream(pipeline,cursorOptions: {}).toList());
 
+    Settings.instance.logger.log(Level.FINE,'Fetching closest candle timestamp that corresponds to block time $blockTime µs <--> ${aggregateResults.first['luts']} µs');
+
     return aggregateResults.first['luts'];
 
   }
@@ -57,8 +59,6 @@ class Bitfinex {
         r'$project': {
 
           'luts': 1,
-          'diff': { r'$abs': { r'$subtract': [newer, r'$luts']}},
-
           'candle.mts': 1,
           'candle.open': 1,
           'candle.close': 1,
@@ -68,8 +68,6 @@ class Bitfinex {
 
         }
       },
-
-      { r'$sort': { 'diff': 1}},
 
       /* Get all entries between the last block and and previous one (last and penultimate) */
       { r'$match': { 'luts': { r'$gte': older, r'$lte': newer}}},

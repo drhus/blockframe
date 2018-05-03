@@ -95,6 +95,14 @@ class Blockchain {
 
   }
 
+  Future<bool> isEmpty() async {
+
+    List blocks = await blocksCollection.find().toList();
+
+    return blocks.length == 0;
+
+  }
+
   Future<List<Map>> fetchLastBlocks({int limit}) async {
 
     SelectorBuilder selectorBuilder =
