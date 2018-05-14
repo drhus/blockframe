@@ -35,8 +35,8 @@ class Bitfinex {
         }
       },
 
-      { r'$sort': { 'diff': 1}},
       // Get the closest value
+      { r'$sort': { 'diff': 1}},
       { r'$limit' : 1 }
 
     ];

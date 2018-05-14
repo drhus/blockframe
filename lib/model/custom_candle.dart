@@ -29,6 +29,9 @@ class CustomCandle extends Candle {
     num open = candles.first.open;
     num close = candles.last.close;
 
+    int luts = candles.last.luts;
+    int mts = candles.last.mts;
+
     candles.sort((CustomCandle a,CustomCandle b) => a.high.compareTo(b.high));
     num high = candles.last.high;
 
@@ -37,7 +40,7 @@ class CustomCandle extends Candle {
 
     num volume = candles.fold(0, (num volume, CustomCandle candle) => volume + candle.volume);
 
-    return new CustomCandle(candles.last.luts,candles.last.mts, open, close, high, low, volume);
+    return new CustomCandle(luts,mts, open, close, high, low, volume);
 
   }
 
