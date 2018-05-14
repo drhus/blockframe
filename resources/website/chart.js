@@ -25,7 +25,12 @@ window.onload = function () {
 
     $.getJSON('http://data.blockframe.xyz:8000/last/' + getBlockParameter(), function (data) {
 
-        datapoints = data.map(function(block)  {
+        datapoints =
+
+            data
+
+                .filter(function(block) { return block.price.candle != null || undefined })
+                .map(function(block)  {
 
             var datapoint;
 
