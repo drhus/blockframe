@@ -73,6 +73,8 @@ class BlocksController extends HTTPController {
 
       List<Map> data = await Database.instance.blockchain.fetchLastBlocks(limit: blocks);
 
+      data.removeWhere((Map block) => block['price'] == null);
+
       return new Response.ok(data)
 
         ..contentType = ContentType.JSON;

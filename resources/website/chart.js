@@ -23,17 +23,14 @@ function getBlockParameter() {
 
 window.onload = function () {
 
-    $.getJSON('http://data.blockframe.xyz:8000/last/' + getBlockParameter(), function (data) {
+    $.getJSON('http://localhost:8000/last/' + getBlockParameter(), function (data) {
 
         datapoints =
 
-            data
-
-                .filter(function(block) { return block.price.candle != null || undefined })
-                .map(function(block)  {
+            data.map(function(block)  {
 
             var datapoint;
-
+            
             try {
 
                 datapoint =  {
