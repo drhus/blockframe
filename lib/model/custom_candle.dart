@@ -22,7 +22,21 @@ class CustomCandle extends Candle {
 
   }
 
-  Map get asMap => { 'luts' : luts, 'candle' : super.asMap};
+  CustomCandle.fromMap(Map candle) : super(candle['mts'],candle['open'],candle['close'],candle['high'],candle['low'],candle['volume']) {
+
+    luts = candle['luts'];
+
+  }
+
+  Map get asMap {
+
+    Map custom = { 'luts': luts };
+
+    custom.addAll(super.asMap);
+
+    return custom;
+
+  }
 
   static CustomCandle adjustValues(List<CustomCandle> candles) {
 

@@ -100,9 +100,8 @@ class Loader {
 
         CustomCandle candle = await Database.instance.fetchCandleFromNewBlock(block);
 
-        block['price'] = candle?.asMap;
-
         await Database.instance.blockchain.save(block);
+        await Database.instance.price.save(block['height'], candle?.asMap);
 
       }
 

@@ -2,15 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:blockframe_daemon/controller/database/dao/dao.dart';
+import 'package:blockframe_daemon/controller/database/dao/bitcoin.dart' as bitcoin;
 import 'package:blockframe_daemon/controller/database/database.dart';
 import 'package:blockframe_daemon/model/custom_candle.dart';
 import 'package:test/test.dart';
 
 HttpClient client = new HttpClient();
 
-Blockchain blockchain = Database.instance.blockchain;
-Bitfinex bitfinex = Database.instance.bitfinex;
+bitcoin.Blockchain blockchain = Database.instance.blockchain;
+bitcoin.Bitfinex bitfinex = Database.instance.bitfinex;
 
 Future<Map> fetchBlockFromURL(int height) async {
 
@@ -50,7 +50,7 @@ Future main() async {
 
     });
 
-    test('next block', () async {
+    /* test('next block', () async {
 
       // Return results sorted descending
       List<Map> blocks = await blockchain.fetchLastBlocks(limit: 2);
@@ -59,21 +59,21 @@ Future main() async {
 
       expect(next == blocks.first['height'],true);
 
-    });
+    }); */
 
   });
 
   group('Bitfinex',() {
 
-    test('fetch candle data', () async {
+    /* test('fetch candle data', () async {
 
       int older = await blockchain.findLastestTimestamp();
       int newer = (await blockchain.fetchBlock(516840))['time'];
 
-      var candles = await blockchain.fetchLatestBlock();
+      var candles = await blockchain.fetchLatest();
       expect(candles.length >= 0,true);
 
-    });
+    }); */
     
     test('adjust candle data', () async {
 

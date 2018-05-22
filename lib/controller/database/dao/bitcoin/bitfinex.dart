@@ -1,10 +1,6 @@
 import 'dart:async';
 import 'dart:core';
 
-import 'dart:math';
-import 'package:ansicolor/ansicolor.dart';
-import 'package:blockframe_daemon/controller/database/dao/blockchain.dart';
-import 'package:blockframe_daemon/controller/database/database.dart';
 import 'package:blockframe_daemon/controller/settings.dart';
 import 'package:blockframe_daemon/model/custom_candle.dart';
 import 'package:logging/logging.dart';
@@ -16,12 +12,12 @@ class Bitfinex {
 
   Bitfinex(Db db) {
 
-    candlesCollection = db.collection('bitfinex_candles');
+    candlesCollection = db.collection('candle data');
 
   }
 
-  /// [blockTime] is in µ seconds
-  Future<int> fetchClosestCandleTimestamp(int blockTime) async {
+  /// [blockTime] is in seconds
+  Future<int> fetchClosestCandleByTimestamp(int blockTime) async {
 
     List<Map> pipeline = [
 
@@ -30,13 +26,14 @@ class Bitfinex {
         r'$project': {
 
           'luts': 1,
-          'diff': { r'$abs': { r'$subtract': [blockTime, r'$luts']}},
+          'diff': { r'$abs' : { r'$subtract' : [blockTime * 1000 * 1000, r'$luts']}},
 
         }
+
       },
 
       // Get the closest value
-      { r'$sort': { 'diff': 1}},
+      { r'$sort'  : { 'diff': 1 }},
       { r'$limit' : 1 }
 
     ];
@@ -59,18 +56,18 @@ class Bitfinex {
         r'$project': {
 
           'luts': 1,
-          'candle.mts': 1,
-          'candle.open': 1,
-          'candle.close': 1,
-          'candle.high': 1,
-          'candle.low': 1,
-          'candle.volume': 1
+          'mts': 1,
+          'open': 1,
+          'close': 1,
+          'high': 1,
+          'low': 1,
+          'volume': 1
 
         }
       },
 
       /* Get all entries between the last block and and previous one (last and penultimate) */
-      { r'$match': { 'luts': { r'$gte': older, r'$lte': newer}}},
+      { r'$match': { 'luts': { r'$gt': older, r'$lt': newer}}},
       { r'$sort': { 'luts': 1}}
 
     ];
@@ -79,16 +76,8 @@ class Bitfinex {
 
     List<CustomCandle> results = aggregateResults.map((dynamic candle) {
 
-      return new CustomCandle(
+      return new CustomCandle.fromMap(candle);
 
-          candle['luts'],
-
-          candle['candle']['mts'],
-          candle['candle']['open'],
-          candle['candle']['close'],
-          candle['candle']['high'],
-          candle['candle']['low'],
-          candle['candle']['volume']);
 
     }).toList();
 
@@ -98,13 +87,9 @@ class Bitfinex {
 
   Future saveCandles(List data) async {
 
-    AnsiPen greenPen = new AnsiPen()..green(bold: true);
-    /*AnsiPen bluePen = new AnsiPen()..blue(bold: true);
-    AnsiPen redPen = new AnsiPen()..red(bold: true);*/
-
     CustomCandle candle = new CustomCandle.fromList(data);
 
-    Settings.instance.logger.log(Level.FINE,'Saving bitfinex candle ${greenPen(candle.asMap.toString())}');
+    Settings.instance.logger.log(Level.FINE,'Saving bitfinex candle ${Color.green(candle.asMap.toString())}');
     candlesCollection.insert(candle.asMap);
 
   }

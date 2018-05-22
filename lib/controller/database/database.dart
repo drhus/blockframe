@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:blockframe_daemon/controller/database/dao/dao.dart' as dao;
+import 'package:blockframe_daemon/controller/database/dao/bitcoin.dart' as bitcoin;
 import 'package:blockframe_daemon/controller/settings.dart';
 import 'package:blockframe_daemon/model/custom_candle.dart';
 import 'package:logging/logging.dart';
@@ -14,15 +14,17 @@ class Database {
 
   Db _db;
 
-  dao.Bitfinex bitfinex;
-  dao.Blockchain blockchain;
+  bitcoin.Bitfinex bitfinex;
+  bitcoin.Blockchain blockchain;
+  bitcoin.Price price;
 
   Database._private() {
 
-    _db = new Db('mongodb://localhost:27017/blockframe');
+    _db = new Db('mongodb://localhost:27017/bitcoin');
 
-    bitfinex = new dao.Bitfinex(_db);
-    blockchain = new dao.Blockchain(_db);
+    bitfinex = new bitcoin.Bitfinex(_db);
+    blockchain = new bitcoin.Blockchain(_db);
+    price = new bitcoin.Price(_db);
 
   }
 
@@ -69,9 +71,9 @@ class Database {
     int older = await blockchain.isEmpty()
 
       ? 0
-      : (await blockchain.fetchLatestBlock())['price']['luts'];
+      : (await price.fetchLatest());
 
-    int newer = (await bitfinex.fetchClosestCandleTimestamp(block['time'] * pow(10,6)));
+    int newer = (await bitfinex.fetchClosestCandleByTimestamp(block['time']));
 
     Settings.instance.logger.log(Level.FINE,'Previous block timestamp: ${older} µs');
     Settings.instance.logger.log(Level.FINE,'Current block timestamp: ${newer} µs');

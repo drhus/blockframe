@@ -1,8 +1,7 @@
-import 'package:blockframe_daemon/controller/database/dao/blockchain.dart';
 import 'package:blockframe_daemon/controller/database/database.dart';
+import 'package:blockframe_daemon/model/custom_candle.dart';
 
 import 'blockframe_server.dart';
-import 'package:blockframe_daemon/model/custom_candle.dart';
 
 /// This class handles setting up this application.
 ///
@@ -39,9 +38,9 @@ class BlockframeServerSink extends RequestSink {
     // See: https://aqueduct.io/docs/http/request_controller/
 
     router.route("/last/[:blocks]").generate(() => new BlocksController());
-    router.route("/range/[:blocks]").generate(() => new RangeController());
-    router.route("/csv/blockframes").generate(() => new CSVBlockframes());
-    router.route("/csv/candles/[:height]").generate(() => new CSVCandlesByBlockFrame());
+    //router.route("/range/[:blocks]").generate(() => new RangeController());
+    //router.route("/csv/blockframes").generate(() => new CSVBlockframes());
+    //router.route("/csv/candles/[:height]").generate(() => new CSVCandlesByBlockFrame());
 
     /*router
 
@@ -71,9 +70,7 @@ class BlocksController extends HTTPController {
 
     if (blocks > 0) {
 
-      List<Map> data = await Database.instance.blockchain.fetchLastBlocks(limit: blocks);
-
-      data.removeWhere((Map block) => block['price'] == null);
+      List<Map> data = await Database.instance.price.fetchLastPrices(limit: blocks);
 
       return new Response.ok(data)
 
@@ -94,15 +91,15 @@ class CSVBlockframes extends HTTPController {
   @httpGet
   Future<Response> getBlocks(@HTTPPath("height") int height) async {
 
-    Blockchain blockchain = Database.instance.blockchain;
+    /*Price price = Database.instance.price;
     List<Map> blocks = [];
 
     StringBuffer csv = new StringBuffer();
 
     height == null
 
-        ? blocks = await blockchain.fetchLastBlocks()
-        : blocks.add(await blockchain.fetchBlock(height));
+        ? blocks = await price.fetchLastPrices()
+        : blocks.add(await price.priceCollection.find());
 
     // Header
     csv.writeln(header);
@@ -117,7 +114,7 @@ class CSVBlockframes extends HTTPController {
       return new Response.ok(csv.toString())
 
         ..contentType = new ContentType("text", "csv", charset: "utf-8")
-        ..headers = { 'Content-Disposition' : 'attachment; filename=blockframes.csv' };
+        ..headers = { 'Content-Disposition' : 'attachment; filename=blockframes.csv' }; */
 
     }
 

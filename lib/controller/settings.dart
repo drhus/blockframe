@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ansicolor/ansicolor.dart';
 import 'package:logging/logging.dart';
 
 export 'package:logging/logging.dart';
@@ -60,5 +61,13 @@ class Settings {
 
   String formatContent(LogRecord record) =>
       '${record.level.name}: ${record.time}: ${record.message}';
+
+}
+
+class Color {
+
+  static AnsiPen green = new AnsiPen()..green(bold: true);
+  static AnsiPen blue = new AnsiPen()..cyan(bold: true);
+  static AnsiPen red = new AnsiPen()..red(bold: true);
 
 }
