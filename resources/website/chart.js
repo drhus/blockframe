@@ -23,8 +23,7 @@ function getBlockParameter() {
 
 window.onload = function () {
 
-    $.getJSON('http://localhost:8000/last/' + getBlockParameter(), function (data) {
-    //$.getJSON('http://data.blockframe.xyz:8000/last/' + getBlockParameter(), function (data) {
+    $.getJSON('http://data.blockframe.xyz:8000/last/' + getBlockParameter(), function (data) {
 
         datapoints =
 
