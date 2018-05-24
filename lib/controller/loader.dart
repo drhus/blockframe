@@ -7,7 +7,7 @@ import 'package:blockframe_daemon/controller/settings.dart';
 import 'package:blockframe_daemon/controller/websockets/bitfinex/bitfinex.dart';
 import 'package:blockframe_daemon/controller/websockets/blockchain.info/blockchain.dart';
 import 'package:blockframe_daemon/controller/websockets/channel.dart';
-import 'package:blockframe_daemon/model/custom_candle.dart';
+import 'package:blockframe_daemon/model/candle.dart';
 
 class Loader {
 
@@ -98,10 +98,10 @@ class Loader {
 
       try {
 
-        CustomCandle candle = await Database.instance.fetchCandleFromNewBlock(block);
+        Candle candle = await Database.instance.fetchCandleFromNewBlock(block);
 
         await Database.instance.blockchain.save(block);
-        await Database.instance.price.save(block['height'], candle?.asMap);
+        await Database.instance.price.save(block['height'],candle.asMap);
 
       }
 

@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:blockframe_daemon/controller/database/dao/bitcoin.dart' as bitcoin;
 import 'package:blockframe_daemon/controller/settings.dart';
-import 'package:blockframe_daemon/model/custom_candle.dart';
+import 'package:blockframe_daemon/model/candle.dart';
 import 'package:logging/logging.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
@@ -29,15 +29,15 @@ class Database {
   }
 
   /// Weighted candle
-  Future<CustomCandle> fetchCandleFromBlock(Map block) async {
+  Future<Candle> fetchCandleFromBlock(Map block) async {
 
-    List<CustomCandle> candles = await fetchCandlesByBlockHeight(block['height']);
+    List<Candle> candles = await fetchCandlesByBlockHeight(block['height']);
 
-    return candles.isNotEmpty ? CustomCandle.adjustValues(candles) : null;
+    return candles.isNotEmpty ? Candle.adjustValues(candles) : null;
 
   }
 
-  Future<List<CustomCandle>> fetchCandlesByBlockHeight(int height) async {
+  Future<List<Candle>> fetchCandlesByBlockHeight(int height) async {
 
     int newer;
 
@@ -66,12 +66,12 @@ class Database {
 
   }
 
-  Future<CustomCandle> fetchCandleFromNewBlock(Map block) async {
+  Future<Candle> fetchCandleFromNewBlock(Map block) async {
 
     int older = await blockchain.isEmpty()
 
       ? 0
-      : (await price.fetchLatest());
+      : (await price.fetchLatest())['mts'];
 
     int newer = (await bitfinex.fetchClosestCandleByTimestamp(block['time']));
 
@@ -80,7 +80,9 @@ class Database {
 
     List candles = await bitfinex.fetchCandles(older,newer);
 
-    return candles.isNotEmpty ? CustomCandle.adjustValues(candles) : null;
+    if (candles == null) throw new NullThrownError();
+
+    return Candle.adjustValues(candles);
 
   }
 

@@ -23,11 +23,12 @@ function getBlockParameter() {
 
 window.onload = function () {
 
-    $.getJSON('http://data.blockframe.xyz:8000/last/' + getBlockParameter(), function (data) {
+    $.getJSON('http://localhost:8000/last/' + getBlockParameter(), function (data) {
+    //$.getJSON('http://data.blockframe.xyz:8000/last/' + getBlockParameter(), function (data) {
 
         datapoints =
 
-            data.map(function(block)  {
+            data.map(function(price)  {
 
             var datapoint;
             
@@ -35,19 +36,19 @@ window.onload = function () {
 
                 datapoint =  {
 
-                    x: block.height,
+                    x: price['block height'],
 
                     y: [
 
-                        block.price.candle.open,
-                        block.price.candle.high,
-                        block.price.candle.low,
-                        block.price.candle.close
+                        price.open,
+                        price.high,
+                        price.low,
+                        price.close
 
                     ],
 
                     //label: new Date(element.data.candle.mts).toLocaleDateString().toString() + ' - ' + element.height.toString()
-                    label: block.height
+                    label: price.height
 
                 };
 
@@ -55,7 +56,7 @@ window.onload = function () {
 
             catch(exception) {
 
-                console.error('Null datapoint for block ' + block.height)
+                console.error('Null datapoint for block ' + price.height)
 
             }
 

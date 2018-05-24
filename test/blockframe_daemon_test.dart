@@ -4,7 +4,8 @@ import 'dart:io';
 
 import 'package:blockframe_daemon/controller/database/dao/bitcoin.dart' as bitcoin;
 import 'package:blockframe_daemon/controller/database/database.dart';
-import 'package:blockframe_daemon/model/custom_candle.dart';
+import 'package:blockframe_daemon/model/candle.dart';
+
 import 'package:test/test.dart';
 
 HttpClient client = new HttpClient();
@@ -79,9 +80,9 @@ Future main() async {
 
       Map<String,num> data = {'volume': 147.81158993000005,	'open': 6749.60, 'high' : 6759.50, 'low' : 6749.60, 'close' :	6755.00 };
 
-      List<CustomCandle> candles = await Database.instance.fetchCandlesByBlockHeight(516840);
+      List<Candle> candles = await Database.instance.fetchCandlesByBlockHeight(516840);
 
-      CustomCandle adjusted = CustomCandle.adjustValues(candles);
+      Candle adjusted = Candle.adjustValues(candles);
 
       expect(adjusted.volume == data['volume'],true);
       expect(adjusted.open == data['open'],true);

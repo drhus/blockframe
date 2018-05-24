@@ -17,14 +17,29 @@ class Price {
 
   Future save(int blockHeight,Map candle) async {
 
-    Settings.instance.logger.log(Level.FINE,'Saving bitfinex candle ${Color.green(candle.toString())}');
-    priceCollection.insert({'block height' : blockHeight, 'candle' : candle});
+    Map price = {
+
+      'block height' : blockHeight,
+
+      'mts' : candle['mts'],
+      'open' : candle['open'],
+      'close' : candle['close'],
+      'high' : candle['high'],
+      'low' : candle['low'],
+      'volume' : candle['volume']
+
+    };
+
+    Settings.instance.logger.log(Level.INFO,'Saving bitcoin price ${Color.green(price.toString())}');
+    priceCollection.insert(price);
 
   }
 
   Future<Map> fetchLatest() async {
 
-    return (await fetchLastPrices(limit: 1)).toList().first;
+    Map latest = (await fetchLastPrices(limit: 1)).toList().first;
+
+    return latest;
 
   }
 
@@ -34,7 +49,7 @@ class Price {
 
     where
 
-        .sortBy('height', descending: true);
+        .sortBy('block height', descending: true);
 
     return await priceCollection.find(selectorBuilder.limit(limit ?? 0)).toList();
 

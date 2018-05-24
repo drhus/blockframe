@@ -1,5 +1,5 @@
 import 'package:blockframe_daemon/controller/database/database.dart';
-import 'package:blockframe_daemon/model/custom_candle.dart';
+import 'package:blockframe_daemon/model/candle.dart';
 
 import 'blockframe_server.dart';
 
@@ -129,13 +129,13 @@ class CSVCandlesByBlockFrame extends HTTPController {
 
     StringBuffer csv = new StringBuffer();
 
-    List<CustomCandle> candles = await Database.instance.fetchCandlesByBlockHeight(height);
+    List<Candle> candles = await Database.instance.fetchCandlesByBlockHeight(height);
 
     csv.writeln(header);
 
-    candles.forEach((CustomCandle candle) {
+    candles.forEach((Candle candle) {
 
-      csv.writeln("$height,${candle.luts},${candle.mts},${candle.volume},${candle.open},${candle.high},${candle.low},${candle.close}");
+      csv.writeln("$height,${candle.mts},${candle.volume},${candle.open},${candle.high},${candle.low},${candle.close}");
 
     });
 

@@ -36,27 +36,22 @@
 
         var blocksLOCH = new Array();
 
-        $.getJSON('http://data.blockframe.xyz:8000/last/' + getBlockParameter(), function (data) {
+        $.getJSON('http://localhost:8000/last/' + getBlockParameter(), function (data) {
+        //$.getJSON('http://data.blockframe.xyz:8000/last/' + getBlockParameter(), function (data) {
 
             data.forEach(element => {
 
                 let block = new Array;
                 let buffer;
 
-                var candle = element.candle.candle;
-
                 block.push(
 
                     element.height,
-                    /*element.price.low,
-                    element.price.open,
-                    element.price.close,
-                    element.price.high*/
 
-                    candle.open,
-                    candle.high,
-                    candle.low,
-                    candle.close
+                    element.open,
+                    element.high,
+                    element.low,
+                    element.close
 
                 );
 

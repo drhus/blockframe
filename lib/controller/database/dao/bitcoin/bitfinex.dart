@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:core';
 
 import 'package:blockframe_daemon/controller/settings.dart';
-import 'package:blockframe_daemon/model/custom_candle.dart';
+import 'package:blockframe_daemon/model/candle.dart';
 import 'package:logging/logging.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
@@ -25,8 +25,8 @@ class Bitfinex {
 
         r'$project': {
 
-          'luts': 1,
-          'diff': { r'$abs' : { r'$subtract' : [blockTime * 1000 * 1000, r'$luts']}},
+          'mts': 1,
+          'diff': { r'$abs' : { r'$subtract' : [blockTime * 1000, r'$mts']}},
 
         }
 
@@ -40,14 +40,14 @@ class Bitfinex {
 
     List aggregateResults = (await candlesCollection.aggregateToStream(pipeline,cursorOptions: {}).toList());
 
-    Settings.instance.logger.log(Level.FINE,'Fetching closest candle timestamp that corresponds to block time $blockTime µs <--> ${aggregateResults.first['luts']} µs');
+    Settings.instance.logger.log(Level.FINE,'Fetching closest candle timestamp that corresponds to block time $blockTime µs <--> ${aggregateResults.first['mts']} ms');
 
-    return aggregateResults.first['luts'];
+    return aggregateResults.first['mts'];
 
   }
 
   /// For correct operation [older] and [newer] should be in µ seconds
-  Future<List<CustomCandle>> fetchCandles(int older, int newer) async {
+  Future<List<Candle>> fetchCandles(int older, int newer) async {
 
     List<Map> pipeline = [
 
@@ -55,7 +55,6 @@ class Bitfinex {
 
         r'$project': {
 
-          'luts': 1,
           'mts': 1,
           'open': 1,
           'close': 1,
@@ -67,16 +66,16 @@ class Bitfinex {
       },
 
       /* Get all entries between the last block and and previous one (last and penultimate) */
-      { r'$match': { 'luts': { r'$gt': older, r'$lt': newer}}},
-      { r'$sort': { 'luts': 1}}
+      { r'$match': { 'mts': { r'$gt': older, r'$lt': newer}}},
+      { r'$sort': { 'mts': 1}}
 
     ];
 
     List aggregateResults = (await candlesCollection.aggregateToStream(pipeline,cursorOptions: {}).toList());
 
-    List<CustomCandle> results = aggregateResults.map((dynamic candle) {
+    List<Candle> results = aggregateResults.map((dynamic candle) {
 
-      return new CustomCandle.fromMap(candle);
+      return new Candle.fromMap(candle);
 
 
     }).toList();
@@ -87,7 +86,7 @@ class Bitfinex {
 
   Future saveCandles(List data) async {
 
-    CustomCandle candle = new CustomCandle.fromList(data);
+    Candle candle = new Candle.fromList(data);
 
     Settings.instance.logger.log(Level.FINE,'Saving bitfinex candle ${Color.green(candle.asMap.toString())}');
     candlesCollection.insert(candle.asMap);
