@@ -5,7 +5,7 @@ Constructing a blockFrame chart as a graphical representations of a series of cr
 
 blockframe instead of timeframe charting, for a universe -Blockchain- where objective time doesn't exist, and succession materialize only by mining new blocks.
 
-This project is composed by 3 other ones:
+This project performs the following tasks:
 
 1. **daemon**: a daemon that fetches crypto currencies information and OCHLV (open,close,high,low,volume) data from different sources.
 2. **server**: a REST API with endpoints that shows crypto currencies historical data
@@ -36,4 +36,13 @@ You also need to install the mongodb server.
 
 https://docs.mongodb.com/manual/installation/
 
-After you install it, create a database called blockframe. The daemon connects to the default _27017_ port.
+The daemon connects to the default _27017_ port.
+
+Linux Systemd Scripts
+---------------------
+
+You can use the scripts located at scripts folders in order to stop and start the daemon as a _systemd_ service.
+
+Modify the script to suit your own needs and check _systemd_ documentation for more information on how to use it.
+
+If you have any questions please e-mail me at _daniel.vieira@duasamericasgroup.com_ 
