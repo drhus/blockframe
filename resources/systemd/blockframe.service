@@ -1,0 +1,20 @@
+[Unit]
+Description=Blockframe data fetcher and API server 
+#Documentation=man:mongod(1)
+
+[Service]
+Type=simple
+User=blockframe
+Group=blockframe
+
+# Change the following two lines to point to the Dart blockframe script location and the Dart VM from the Dart SDK
+WorkingDirectory=/opt/blockframe
+ExecStart=/usr/lib/dart/bin/dart /opt/blockframe/blockframe 
+
+
+ExecStop=/bin/kill -TERM $MAINPID
+Restart=on-failure
+#WatchdogSec=300s
+
+[Install]
+WantedBy=multi-user.target
