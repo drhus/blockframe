@@ -1,3 +1,4 @@
+import 'package:blockframe_daemon/controller/database/dao/bitcoin/price.dart';
 import 'package:blockframe_daemon/controller/database/database.dart';
 import 'package:blockframe_daemon/model/candle.dart';
 
@@ -39,8 +40,7 @@ class BlockframeServerSink extends RequestSink {
 
     router.route("/last/[:blocks]").generate(() => new BlocksController());
     //router.route("/range/[:blocks]").generate(() => new RangeController());
-    //router.route("/csv/blockframes").generate(() => new CSVBlockframes());
-    //router.route("/csv/candles/[:height]").generate(() => new CSVCandlesByBlockFrame());
+    router.route("/csv/prices/[:blocks]").generate(() => new CSVController());
 
     /*router
 
@@ -84,37 +84,32 @@ class BlocksController extends HTTPController {
 
 }
 
-class CSVBlockframes extends HTTPController {
+class CSVController extends HTTPController {
 
-  final String header = 'block height,microsecond timestamp,milisecond timestamp,volume,open,high,low,close';
+  final String header = 'block height,milisecond timestamp,volume,open,high,low,close';
 
   @httpGet
-  Future<Response> getBlocks(@HTTPPath("height") int height) async {
+  Future<Response> getBlocks(@HTTPPath("blocks") int blocks) async {
 
-    /*Price price = Database.instance.price;
-    List<Map> blocks = [];
+    List<Map> prices;
 
     StringBuffer csv = new StringBuffer();
 
-    height == null
-
-        ? blocks = await price.fetchLastPrices()
-        : blocks.add(await price.priceCollection.find());
+    prices = await Database.instance.price.fetchLastPrices(limit: blocks);
 
     // Header
     csv.writeln(header);
 
-      blocks.forEach((Map block) {
+      prices.forEach((Map price) {
 
-        CustomCandle candle = new CustomCandle.fromList(block['price']['candle']);
-        csv.writeln("${block['height']},${candle.luts},${candle.mts},${candle.volume},${candle.open},${candle.high},${candle.low},${candle.close}");
+        csv.writeln("${price['block height']},${price['mts']},${price['volume']},${price['open']},${price['high']},${price['low']},${price['close']}");
 
       });
 
       return new Response.ok(csv.toString())
 
         ..contentType = new ContentType("text", "csv", charset: "utf-8")
-        ..headers = { 'Content-Disposition' : 'attachment; filename=blockframes.csv' }; */
+        ..headers = { 'Content-Disposition' : 'attachment; filename=blockframes.csv' };
 
     }
 
