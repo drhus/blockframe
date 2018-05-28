@@ -1,4 +1,4 @@
-import 'package:blockframe_daemon/controller/database/dao/bitcoin/price.dart';
+import 'package:blockframe_daemon/model/model.dart' as model;
 import 'package:blockframe_daemon/controller/database/database.dart';
 import 'package:blockframe_daemon/model/candle.dart';
 
@@ -70,7 +70,24 @@ class BlocksController extends HTTPController {
 
     if (blocks > 0) {
 
-      List<Map> data = await Database.instance.price.fetchLastPrices(limit: blocks);
+      List<Map> data = [];
+
+      (await Database.instance.price.fetchLastPrices(limit: blocks)).forEach((model.Price price) {
+
+        data.add({
+
+          'block height' : price.blockHeight,
+            'block time' : price.blockTime,
+                   'mts' : price.mts,
+                'volume' : price.volume,
+                  'open' : price.open,
+                  'high' : price.high,
+                   'low' : price.low,
+                 'close' : price.close
+
+        });
+
+      });
 
       return new Response.ok(data)
 
@@ -91,7 +108,7 @@ class CSVController extends HTTPController {
   @httpGet
   Future<Response> getBlocks(@HTTPPath("blocks") int blocks) async {
 
-    List<Map> prices;
+    List<model.Price> prices;
 
     StringBuffer csv = new StringBuffer();
 
@@ -100,9 +117,9 @@ class CSVController extends HTTPController {
     // Header
     csv.writeln(header);
 
-      prices.forEach((Map price) {
+      prices.forEach((model.Price price) {
 
-        csv.writeln("${price['block height']},${price['mts']},${price['volume']},${price['open']},${price['high']},${price['low']},${price['close']}");
+        csv.writeln("${price.blockHeight},${price.blockTime},${price.mts},${price.volume},${price.open},${price.high},${price.low},${price.close}");
 
       });
 

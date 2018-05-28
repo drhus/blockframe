@@ -1,46 +1,19 @@
+import 'package:blockframe_daemon/model/ohlcv.dart';
 import 'package:quiver/core.dart';
 
-class Candle {
+class Candle extends OHLCV {
 
-  Candle(this.mts, this.open, this.close, this.high, this.low, this.volume);
-
-  /// MTS	int	millisecond time stamp
+  /// millisecond time stamp
   int mts;
 
-  /// OPEN	float	First execution during the time frame
-  num open;
-
-  /// CLOSE	float	Last execution during the time frame
-  num close;
-
-  /// HIGH	float	Highest execution during the time frame
-  num high;
-
-  /// LOW	float	Lowest execution during the timeframe
-  num low;
-
-  /// VOLUME	float	Quantity of symbol traded within the timeframe
-  num volume;
+  Candle(this.mts,int open, int close, int high, int low, int volume) : super(open,close,high,low,volume);
 
   Map get asMap => { 'mts' : mts, 'open' : open, 'close' : close, 'high' : high, 'low' : low, 'volume' : volume };
 
   Candle.fromList(List data) :
 
         mts = data[0],
-        open = data[1],
-        close = data[2],
-        high = data[3],
-        low = data[4],
-        volume = data[5];
-
-  Candle.fromMap (Map candle) :
-
-      mts = candle['mts'],
-      open = candle['open'],
-      close = candle['close'],
-      high = candle['high'],
-      low = candle['low'],
-      volume = candle['volume'];
+        super(data[1],data[2],data[3],data[4],data[5]);
 
   static Candle adjustValues(List<Candle> candles) {
 
@@ -80,7 +53,7 @@ class Candle {
   @override
   String toString() {
 
-    return 'Candle {mts: $mts, open: $open, close: $close, high: $high, low: $low, volume: $volume}';
+    return 'Candle {mts: $mts, ${super.toString()}';
 
   }
 

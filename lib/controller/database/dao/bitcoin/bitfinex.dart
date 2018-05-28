@@ -38,11 +38,11 @@ class Bitfinex {
 
     ];
 
-    List aggregateResults = (await candlesCollection.aggregateToStream(pipeline,cursorOptions: {}).toList());
+    Map result = (await candlesCollection.aggregateToStream(pipeline,cursorOptions: {}).toList()).first;
 
-    Settings.instance.logger.log(Level.FINE,'Fetching closest candle timestamp that corresponds to block time $blockTime µs <--> ${aggregateResults.first['mts']} ms');
+    Settings.instance.logger.log(Level.FINE,'Fetching closest candle timestamp that corresponds to block time $blockTime µs <--> ${result['mts']} ms');
 
-    return aggregateResults.first['mts'];
+    return result['mts'];
 
   }
 
@@ -75,7 +75,7 @@ class Bitfinex {
 
     List<Candle> results = aggregateResults.map((dynamic candle) {
 
-      return new Candle.fromMap(candle);
+      return new Candle(candle['mts'],candle['open'],candle['close'],candle['high'],candle['low'],candle['volume']);
 
 
     }).toList();

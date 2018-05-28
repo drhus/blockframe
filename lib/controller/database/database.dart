@@ -52,13 +52,13 @@ class Database {
     if (hasNext) {
 
       int next = await blockchain.next(height);
-      newer = (await blockchain.fetchBlock(next))['time'] * pow(10,6);
+      newer = (await blockchain.fetchBlock(next))['time'] * 1000;
 
     }
 
     else {
 
-      newer = (await blockchain.findLastestTimestamp() * pow(10,6));
+      newer = (await blockchain.findLastestTimestamp() * 1000);
 
     }
 
@@ -71,7 +71,7 @@ class Database {
     int older = await blockchain.isEmpty()
 
       ? 0
-      : (await price.fetchLatest())['mts'];
+      : (await price.fetchLatest()).mts;
 
     int newer = (await bitfinex.fetchClosestCandleByTimestamp(block['time']));
 
