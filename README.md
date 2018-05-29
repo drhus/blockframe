@@ -1,10 +1,4 @@
-<h1 align="center">
-        <br>
-        <img width="200" src="docs/img/logo.png" alt="blockFrame">
-        <br>
-        <h3 align="center">Blockframe Chart</h4>
-        <br>
-</h1>
+# Blockframe Chart
 
 Constructing a blockFrame chart as a graphical representations of a series of crypto asset price movements over block heights, -instead of time- where the basic graphical frame is one block, and the multipliers n blocks used for diverse graphical chart frames.
 
@@ -30,7 +24,7 @@ For faster startups, use the [--snapshots](https://www.dartlang.org/dart-vm/tool
 
 If you're using Linux you can also run dart snapshots just as an executable file by using [update-binfmts]() 
 
-  sudo update-binfmts --package dart --install dart-script /usr/bin/dart --magic '\xf5\xf5\xdc\xdc'
+          sudo update-binfmts --package dart --install dart-script /usr/bin/dart --magic '\xf5\xf5\xdc\xdc'
 
 _See the README.md files in each folder for more details_
 
