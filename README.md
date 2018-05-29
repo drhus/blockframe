@@ -9,11 +9,12 @@
 [blockFrame Original Paper](https://ssrn.com/abstract=3064115 )
 
 # Chart<sup>BETA</sup>
-[Open Chart in separate window](http://data.blockframe.xyz/?blocks=504)
+[Open Chart in separate window](http://data.blockframe.xyz/?blocks=504) :: [w/ highstock Chart](http://data.blockframe.xyz/highstock.html) 
 
 <iframe src="http://data.blockframe.xyz/?blocks=504" style="height:330px;width:100%;border:none;" scrolling="no"></iframe>
 
 
+[blockFrame data endpoint](http://data.blockframe.xyz:8000/last/100) :: [Export as CSV](http://data.blockframe.xyz:8000/csv/prices/100) 
 
 # Why
  **Native blockchain experiance**
