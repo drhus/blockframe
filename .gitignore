@@ -17,3 +17,4 @@ log/
 
 pubspec.lock
 /.pub/
+.idea/mongoSettings.xml
