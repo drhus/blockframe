@@ -9,9 +9,9 @@ import 'package:blockframe_daemon/controller/websockets/channel.dart';
 
 import 'requests.dart';
 
-class BlockChainChannel extends Channel {
+class BlockChain extends Channel {
 
-  BlockChainChannel() {
+  BlockChain() {
 
     pingRequest = Requests.ping;
 

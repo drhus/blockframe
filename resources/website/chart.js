@@ -46,8 +46,8 @@ window.onload = function () {
 
                     ],
 
-                    //label: new Date(element.data.candle.mts).toLocaleDateString().toString() + ' - ' + element.height.toString()
-                    label: price.height
+                    label: 'Block ' + price['block height'] + ' @ ' + new Date(price.mts).toISOString()
+                    //label: price.height0
 
                 };
 
@@ -93,7 +93,27 @@ window.onload = function () {
                         dataPoints: datapoints
 
                     }
-                ]
+                ],
+                options: {
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                beginAtZero:true,
+                                callback: function(value, index, values) {
+                                    return '$ ' + number_format(value);
+                                }
+                            }
+                        }]
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, chart){
+                                var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                                return datasetLabel + ': $ ' + number_format(tooltipItem.yLabel, 2);
+                            }
+                        }
+                    }
+                }
             });
         chart.render();
     })

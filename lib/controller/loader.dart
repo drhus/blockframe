@@ -4,15 +4,15 @@ import 'dart:io';
 
 import 'package:blockframe_daemon/controller/database/database.dart';
 import 'package:blockframe_daemon/controller/settings.dart';
-import 'package:blockframe_daemon/controller/websockets/bitfinex/bitfinex.dart';
-import 'package:blockframe_daemon/controller/websockets/blockchain.info/blockchain.dart';
 import 'package:blockframe_daemon/controller/websockets/channel.dart';
 import 'package:blockframe_daemon/model/candle.dart';
 
 class Loader {
 
-  BlockChainChannel blockChainChannel = new BlockChainChannel();
-  BitfinexChannel bitfinexChannel = new BitfinexChannel();
+  Duration reconnectionTime = new Duration(seconds: 30);
+
+  var blockchain = new BlockChain();
+  var bitfinex = new Bitfinex();
 
   Future start() async {
 
@@ -30,14 +30,12 @@ class Loader {
     on SocketException {
 
       Settings.instance.logger.log(Level.SEVERE,'An error ocurred while trying to access the servers. Please check your network connection');
-      Settings.instance.logger.log(Level.SEVERE,'Exiting ...');
 
     }
 
     catch (exception) {
 
       Settings.instance.logger.log(Level.SEVERE,exception);
-      exit(-1);
 
     }
 
@@ -45,7 +43,7 @@ class Loader {
 
   void _listenToBitfinexEvents() {
 
-    bitfinexChannel.onCandles.listen((candles) async {
+    bitfinex.onCandles.listen((candles) async {
 
       try {
 
@@ -78,7 +76,7 @@ class Loader {
 
     });
 
-    bitfinexChannel.onStall.listen((events) async {
+    bitfinex.onStall.listen((events) async {
 
       _reconnect(events);
 
@@ -88,13 +86,13 @@ class Loader {
 
   Future _listenToBlockChainInfoEvents() async {
 
-    blockChainChannel.onStall.listen((events) async {
+    blockchain.onStall.listen((events) async {
 
       _reconnect(events);
 
     });
 
-    blockChainChannel.onNewBlock.listen((Map block) async {
+    blockchain.onNewBlock.listen((Map block) async {
 
       try {
 
@@ -118,15 +116,15 @@ class Loader {
 
   Future _connect() async {
 
-    await bitfinexChannel.connect();
-    await blockChainChannel.connect();
+    await bitfinex.connect();
+    await blockchain.connect();
 
   }
 
   Future _disconnect() async {
 
-    await bitfinexChannel.disconnect();
-    await blockChainChannel.disconnect();
+    await bitfinex.disconnect();
+    await blockchain.disconnect();
 
   }
 
