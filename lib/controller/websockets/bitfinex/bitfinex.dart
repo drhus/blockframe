@@ -10,7 +10,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 
 import 'requests.dart';
 
-class BitfinexChannel extends Channel {
+class Bitfinex extends Channel {
 
   /// Channel ID
   int id;
@@ -20,7 +20,7 @@ class BitfinexChannel extends Channel {
   Db database;
   DbCollection candles;
 
-  BitfinexChannel() {
+  Bitfinex() {
 
     name = 'Bitfinex';
     url = 'wss://api.bitfinex.com/ws/2';

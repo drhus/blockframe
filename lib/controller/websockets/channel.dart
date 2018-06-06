@@ -4,6 +4,9 @@ import 'dart:io';
 import 'package:blockframe_daemon/controller/settings.dart';
 import 'package:logging/logging.dart';
 
+export 'bitfinex/bitfinex.dart';
+export 'blockchain.info/blockchain.dart';
+
 abstract class Channel {
 
   String pingRequest;
