@@ -16,7 +16,7 @@
   </style>
 </head>
 <body>
-  <div id="header"><b>blockFrame</b> — Bitcoin price over block height <span class="meta" id="meta"></span></div>
+  <div id="header"><b>blockFrame</b> — Bitcoin price over block height</div>
   <div id="chart"></div>
   <div id="error"></div>
   <script>
@@ -64,15 +64,6 @@
           });
           series.setData(candles);
           chart.timeScale().fitContent();
-
-          var first = rows[0], last = rows[rows.length - 1];
-          if (last) {
-            var span = last.height - (first ? first.height : last.height);
-            document.getElementById('meta').textContent =
-              'Blocks ' + (first ? first.height : '') + '–' + last.height +
-              ' · ' + rows.length + ' blocks (' + span + ' apart)' +
-              ' · source: ' + (payload.source || 'static');
-          }
         })
         .catch(function (err) {
           document.getElementById('error').textContent = err.message || String(err);
