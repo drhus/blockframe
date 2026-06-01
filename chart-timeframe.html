@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>blockFrame — Highcharts</title>
+  <script src="https://code.highcharts.com/stock/highstock.js"></script>
+  <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    #container { height: 100vh; width: 100vw; }
+    #error { position: absolute; top: 16px; left: 16px; color: #c62828; font-family: monospace; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <div id="container"></div>
+  <div id="error"></div>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var blocksParam = parseInt(params.get('blocks') || '0', 10);
+
+      fetch('data.json', { cache: 'no-cache' })
+        .then(function (r) {
+          if (!r.ok) throw new Error('Failed to load data.json (' + r.status + ')');
+          return r.json();
+        })
+        .then(function (payload) {
+          var rows = payload.blocks || [];
+          if (blocksParam > 0) rows = rows.slice(-blocksParam);
+
+          var blocksLOCH = rows.map(function (b) {
+            return [b.height, b.open, b.high, b.low, b.close];
+          });
+
+          Highcharts.stockChart('container', {
+            title: { text: 'Bitcoin Block Height × USD Price' },
+            subtitle: { text: payload.source || '' },
+            xAxis: {
+              type: 'linear',
+              tickInterval: 10,
+              minRange: 5,
+              labels: { format: 'Block {value}' },
+              title: { text: 'Block Height' },
+            },
+            yAxis: {
+              labels: { format: '${value}' },
+              title: { text: 'Price (USD)' },
+            },
+            rangeSelector: { enabled: false },
+            navigator: { enabled: false },
+            scrollbar: { enabled: true },
+            tooltip: {
+              valueDecimals: 2,
+              pointFormat: 'Block <b>{point.x}</b><br>' +
+                'O: ${point.open}<br>H: ${point.high}<br>L: ${point.low}<br>C: ${point.close}',
+            },
+            series: [{
+              name: 'Bitcoin',
+              type: 'candlestick',
+              data: blocksLOCH,
+              color: '#ef5350',
+              upColor: '#26a69a',
+            }],
+          });
+        })
+        .catch(function (err) {
+          document.getElementById('error').textContent = err.message || String(err);
+        });
+    })();
+  </script>
+</body>
+</html>

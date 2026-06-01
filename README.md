@@ -8,13 +8,13 @@
 # Paper
 [blockFrame Original Paper](https://ssrn.com/abstract=3064115 )
 
-# Chart<sup>BETA</sup>
-[Open Chart in separate window](http://data.blockframe.info/?blocks=504) :: [Open Chart w/ highstock](http://data.blockframe.info/highstock.html) 
+# Chart<sup>archived</sup>
 
-<iframe src="http://data.blockframe.info/?blocks=504" style="height:330px;width:100%;border:none;" scrolling="no"></iframe>
+> Static snapshot of the most recent ~200 Bitcoin blocks paired with Binance 1m OHLC. The original Dart/Aqueduct backend at `data.blockframe.xyz:8000` is no longer running.
 
+[Lightweight-Charts](/chart-tv.html?blocks=100) :: [Highcharts](/chart-timeframe.html?blocks=100) :: [data.json](/data.json)
 
-[blockFrame data endpoint](http://data.blockframe.info:8000/last/100) :: [Export as CSV](http://data.blockframe.xyz:8000/csv/prices/100) 
+<iframe src="/chart-tv.html?blocks=100" style="height:420px;width:100%;border:none;" scrolling="no"></iframe>
 
 # Why
  **Native blockchain experiance**

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>blockFrame — Lightweight Charts</title>
+  <script src="https://unpkg.com/lightweight-charts@4.2.2/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; background: #131722; color: #d1d4dc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    #chart { position: absolute; top: 36px; left: 0; right: 0; bottom: 0; }
+    #header { position: absolute; top: 0; left: 0; right: 0; height: 36px; padding: 8px 12px; box-sizing: border-box; font-size: 13px; background: #1e222d; border-bottom: 1px solid #2a2e39; }
+    #header b { color: #f7931a; }
+    #header .meta { float: right; color: #787b86; font-size: 12px; }
+    #error { position: absolute; top: 60px; left: 16px; right: 16px; color: #ef5350; font-family: monospace; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <div id="header"><b>blockFrame</b> — Bitcoin price over block height <span class="meta" id="meta"></span></div>
+  <div id="chart"></div>
+  <div id="error"></div>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var blocksParam = parseInt(params.get('blocks') || '0', 10);
+
+      var chart = LightweightCharts.createChart(document.getElementById('chart'), {
+        layout: { background: { color: '#131722' }, textColor: '#d1d4dc' },
+        grid: { vertLines: { color: '#1e222d' }, horzLines: { color: '#1e222d' } },
+        rightPriceScale: { borderColor: '#2a2e39' },
+        timeScale: {
+          borderColor: '#2a2e39',
+          tickMarkFormatter: function (time) { return '#' + time; },
+        },
+        crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+        localization: {
+          timeFormatter: function (time) { return 'Block #' + time; },
+          priceFormatter: function (p) { return '$' + p.toLocaleString(undefined, { maximumFractionDigits: 2 }); },
+        },
+      });
+
+      var series = chart.addCandlestickSeries({
+        upColor: '#26a69a', downColor: '#ef5350',
+        wickUpColor: '#26a69a', wickDownColor: '#ef5350',
+        borderVisible: false,
+      });
+
+      fetch('data.json', { cache: 'no-cache' })
+        .then(function (r) {
+          if (!r.ok) throw new Error('Failed to load data.json (' + r.status + ')');
+          return r.json();
+        })
+        .then(function (payload) {
+          var rows = payload.blocks || [];
+          if (blocksParam > 0) rows = rows.slice(-blocksParam);
+
+          // Lightweight-Charts requires time values to be strictly ascending and unique.
+          // Block heights are monotonically increasing integers, so we use them directly.
+          var candles = rows.map(function (b) {
+            return {
+              time: b.height,
+              open: b.open, high: b.high, low: b.low, close: b.close,
+            };
+          });
+          series.setData(candles);
+          chart.timeScale().fitContent();
+
+          var first = rows[0], last = rows[rows.length - 1];
+          if (last) {
+            var span = last.height - (first ? first.height : last.height);
+            document.getElementById('meta').textContent =
+              'Blocks ' + (first ? first.height : '') + '–' + last.height +
+              ' · ' + rows.length + ' blocks (' + span + ' apart)' +
+              ' · source: ' + (payload.source || 'static');
+          }
+        })
+        .catch(function (err) {
+          document.getElementById('error').textContent = err.message || String(err);
+        });
+
+      window.addEventListener('resize', function () { chart.applyOptions({}); });
+    })();
+  </script>
+</body>
+</html>
