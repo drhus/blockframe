@@ -7,29 +7,44 @@
   <title>blockFrame — Lightweight Charts</title>
   <script src="https://unpkg.com/lightweight-charts@4.2.2/dist/lightweight-charts.standalone.production.js"></script>
   <style>
-    html, body { margin: 0; padding: 0; height: 100%; background: #131722; color: #d1d4dc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    html, body { margin: 0; padding: 0; height: 100%; background: #ffffff; color: #131722; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     #chart { position: absolute; top: 36px; left: 0; right: 0; bottom: 0; }
-    #header { position: absolute; top: 0; left: 0; right: 0; height: 36px; padding: 8px 12px; box-sizing: border-box; font-size: 13px; background: #1e222d; border-bottom: 1px solid #2a2e39; }
+    #header { position: absolute; top: 0; left: 0; right: 0; height: 36px; padding: 8px 12px; box-sizing: border-box; font-size: 13px; background: #f7f8fa; border-bottom: 1px solid #e1e3eb; color: #131722; }
     #header b { color: #f7931a; }
-    #header .meta { float: right; color: #787b86; font-size: 12px; }
-    #error { position: absolute; top: 60px; left: 16px; right: 16px; color: #ef5350; font-family: monospace; white-space: pre-wrap; }
+    #error { position: absolute; top: 60px; left: 16px; right: 16px; color: #c62828; font-family: monospace; white-space: pre-wrap; }
+    #tooltip {
+      position: absolute; display: none; pointer-events: none;
+      z-index: 10; padding: 8px 10px; font-size: 12px; line-height: 1.45;
+      background: #ffffff; border: 1px solid #d8dbe2; border-radius: 4px;
+      box-shadow: 0 2px 6px rgba(16, 24, 40, 0.08);
+      color: #131722; white-space: nowrap;
+    }
+    #tooltip .b { color: #f7931a; font-weight: 600; }
+    #tooltip .row { display: flex; gap: 8px; }
+    #tooltip .row span:first-child { color: #6b7280; min-width: 14px; }
+    #tooltip .row .up { color: #089981; }
+    #tooltip .row .down { color: #f23645; }
   </style>
 </head>
 <body>
-  <div id="header"><b>blockFrame</b> — Bitcoin price over block height <span class="meta" id="meta"></span></div>
+  <div id="header"><b>blockFrame</b> — Bitcoin price over block height</div>
   <div id="chart"></div>
+  <div id="tooltip"></div>
   <div id="error"></div>
   <script>
     (function () {
       var params = new URLSearchParams(window.location.search);
       var blocksParam = parseInt(params.get('blocks') || '0', 10);
 
-      var chart = LightweightCharts.createChart(document.getElementById('chart'), {
-        layout: { background: { color: '#131722' }, textColor: '#d1d4dc' },
-        grid: { vertLines: { color: '#1e222d' }, horzLines: { color: '#1e222d' } },
-        rightPriceScale: { borderColor: '#2a2e39' },
+      var chartEl = document.getElementById('chart');
+      var tipEl = document.getElementById('tooltip');
+
+      var chart = LightweightCharts.createChart(chartEl, {
+        layout: { background: { color: '#ffffff' }, textColor: '#131722', attributionLogo: false },
+        grid: { vertLines: { color: '#eef0f3' }, horzLines: { color: '#eef0f3' } },
+        rightPriceScale: { borderColor: '#d8dbe2' },
         timeScale: {
-          borderColor: '#2a2e39',
+          borderColor: '#d8dbe2',
           tickMarkFormatter: function (time) { return '#' + time; },
         },
         crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
@@ -40,9 +55,41 @@
       });
 
       var series = chart.addCandlestickSeries({
-        upColor: '#26a69a', downColor: '#ef5350',
-        wickUpColor: '#26a69a', wickDownColor: '#ef5350',
+        upColor: '#089981', downColor: '#f23645',
+        wickUpColor: '#089981', wickDownColor: '#f23645',
+        borderUpColor: '#089981', borderDownColor: '#f23645',
         borderVisible: false,
+      });
+
+      function fmtPrice(v) {
+        return '$' + v.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      chart.subscribeCrosshairMove(function (param) {
+        if (!param || !param.point || param.time === undefined) {
+          tipEl.style.display = 'none';
+          return;
+        }
+        var data = param.seriesData && param.seriesData.get(series);
+        if (!data) { tipEl.style.display = 'none'; return; }
+        var up = data.close >= data.open;
+        var cls = up ? 'up' : 'down';
+        tipEl.innerHTML =
+          '<div><span class="b">Block #' + param.time + '</span></div>' +
+          '<div class="row"><span>O</span><span>' + fmtPrice(data.open)  + '</span></div>' +
+          '<div class="row"><span>H</span><span>' + fmtPrice(data.high)  + '</span></div>' +
+          '<div class="row"><span>L</span><span>' + fmtPrice(data.low)   + '</span></div>' +
+          '<div class="row"><span>C</span><span class="' + cls + '">' + fmtPrice(data.close) + '</span></div>';
+
+        var tipW = 130, tipH = 100;
+        var x = param.point.x + 16;
+        var y = param.point.y + 36 + 12; // +36 for header offset
+        var maxX = chartEl.clientWidth - tipW - 8;
+        if (x > maxX) x = param.point.x - tipW - 16;
+        if (y > chartEl.clientHeight - tipH + 30) y = param.point.y + 36 - tipH - 12;
+        tipEl.style.left = x + 'px';
+        tipEl.style.top = y + 'px';
+        tipEl.style.display = 'block';
       });
 
       fetch('data.json', { cache: 'no-cache' })
@@ -64,15 +111,6 @@
           });
           series.setData(candles);
           chart.timeScale().fitContent();
-
-          var first = rows[0], last = rows[rows.length - 1];
-          if (last) {
-            var span = last.height - (first ? first.height : last.height);
-            document.getElementById('meta').textContent =
-              'Blocks ' + (first ? first.height : '') + '–' + last.height +
-              ' · ' + rows.length + ' blocks (' + span + ' apart)' +
-              ' · source: ' + (payload.source || 'static');
-          }
         })
         .catch(function (err) {
           document.getElementById('error').textContent = err.message || String(err);
